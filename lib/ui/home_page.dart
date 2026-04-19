@@ -80,9 +80,12 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xFF6A6995),
       ),
 
-      body: ListView.builder(
-        itemBuilder: (_, i) => const Placeholder(),
-        itemCount: 10,
+      body: ListView.separated(
+        itemBuilder: (_, i) => Section(
+          data: data[i],
+        ),
+        separatorBuilder: (_,i) => const SizedBox(height: 24,),
+        itemCount: data.length,
       ),
       backgroundColor: const Color(0xFF373550),
       // іконки знизу navigation bar
