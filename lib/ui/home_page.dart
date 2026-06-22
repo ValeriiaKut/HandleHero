@@ -1,119 +1,258 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:handle_hero/ui/section.dart';
+import 'package:handle_hero/utils/my_images.dart';
 
-Color _darkenColor(Color color, double factor){
-  return HSLColor.fromColor(color)
-      .withLightness(
-      (HSLColor.fromColor(color).lightness - factor).clamp(0.0, 1.0))
-      .toColor();
-}
-
-
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final data = <SectionData>[
-    SectionData(
-      color: Colors.lightBlueAccent,
-      colorOscuro: _darkenColor(Colors.pinkAccent, 0.2),
-      etapa: 1,
-      seccion: 1,
-      title: 'shos1',
-    ),
-    SectionData(
-      color: Colors.lightBlueAccent,
-      colorOscuro: _darkenColor(Colors.pinkAccent, 0.2),
-      etapa: 1,
-      seccion: 1,
-      title: 'shos2',
-    ),
-    SectionData(
-      color: Colors.lightBlueAccent,
-      colorOscuro: _darkenColor(Colors.pinkAccent, 0.2),
-      etapa: 1,
-      seccion: 1,
-      title: 'shos3',
-    ),
-    SectionData(
-      color: Colors.lightBlueAccent,
-      colorOscuro: _darkenColor(Colors.pinkAccent, 0.2),
-      etapa: 1,
-      seccion: 1,
-      title: 'shos4',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        // обєкти типу сердець грощей і тд зверу
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('data'),
-            //kartinka
-            // Row(
-            //   mainAxisSize: MainAxisSize.min,
-            //   children: [
-            //     SvgPicture.asset(assetName, width: , height: ,),
-            //     const SizedBox(width: ,)
-            //     const Text('100',
-            //     style: TextStyle(
-            //       fontWeight: FontWeight.w600,
-            //       letterSpacing: 2.0,
-            //       fontSize: 16.0,
-            //       color: Colors.white
-            //     ),
-            //     )
-            //   ],
-            // )
-          ],
-        ),
-        backgroundColor: const Color(0xFF6A6995),
+        title: const Text('Silent Sings'),
       ),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          height: 2000, // висота скролу
+          child: Stack(
+            children: [
+              // Фон
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(MyImages.grass),
+                      repeat: ImageRepeat.repeatY, // повтор вниз
+                    ),
+                  ),
+                ),
+              ),
+//modu;1
+              // Кнопка 1
+              Positioned(
+                left: 280,
+                top: 5,
+                child: InkWell(
+                  onTap: () {
+                    print('Кнопка 1');
+                  },
+                  child: Image.asset(
+                    MyImages.easyLevel,
+                    width: 100,
+                  ),
+                ),
+              ),
 
-      body: ListView.separated(
-        itemBuilder: (_, i) => Section(
-          data: data[i],
+              // Кнопка 1
+              Positioned(
+                left: 130,
+                top: 40,
+                child: InkWell(
+                  onTap: () {
+                    print('Кнопка 1');
+                  },
+                  child: Image.asset(
+                    MyImages.easyLevel,
+                    width: 100,
+                  ),
+                ),
+              ),
+
+              Positioned(
+                left: 20,
+                top: 160,
+                child: InkWell(
+                  onTap: () {
+                    print('Кнопка 1');
+                  },
+                  child: Image.asset(
+                    MyImages.easyLevel,
+                    width: 100,
+                  ),
+                ),
+              ),
+
+
+              // Кнопка 1
+              Positioned(
+                left: 75,
+                top: 300,
+                child: InkWell(
+                  onTap: () {
+                    print('Hard 1');
+                  },
+                  child: Image.asset(
+                    MyImages.hardLevel,
+                    width: 110,
+                  ),
+                ),
+              ),
+              // Кнопка 1
+              Positioned(
+                left: 10,
+                top: 420,
+                child: InkWell(
+                  onTap: () {
+                    print('Hard 1');
+                  },
+                  child: Image.asset(
+                    MyImages.statue,
+                    width: 400,
+                  ),
+                ),
+              ),
+//modu;2
+
+              Positioned(
+                left: 280,
+                top: 740,
+                child: InkWell(
+                  onTap: () {
+                    print('Кнопка 1');
+                  },
+                  child: Image.asset(
+                    MyImages.easyLevel,
+                    width: 100,
+                  ),
+                ),
+              ),
+
+              // Кнопка 1
+              Positioned(
+                left: 130,
+                top: 785,
+                child: InkWell(
+                  onTap: () {
+                    print('Кнопка 1');
+                  },
+                  child: Image.asset(
+                    MyImages.easyLevel,
+                    width: 100,
+                  ),
+                ),
+              ),
+
+              Positioned(
+                left: 20,
+                top: 895,
+                child: InkWell(
+                  onTap: () {
+                    print('Кнопка 1');
+                  },
+                  child: Image.asset(
+                    MyImages.easyLevel,
+                    width: 100,
+                  ),
+                ),
+              ),
+
+
+              // Кнопка 1
+              Positioned(
+                left: 75,
+                top: 1035,
+                child: InkWell(
+                  onTap: () {
+                    print('Hard 1');
+                  },
+                  child: Image.asset(
+                    MyImages.hardLevel,
+                    width: 110,
+                  ),
+                ),
+              ),
+              // Кнопка 1
+              Positioned(
+                left: 10,
+                top: 1150,
+                child: InkWell(
+                  onTap: () {
+                    print('Hard 1');
+                  },
+                  child: Image.asset(
+                    MyImages.statue,
+                    width: 400,
+                  ),
+                ),
+              ),
+              // modul3
+              // Positioned(
+              //   left: 290,
+              //   top: 900,
+              //   child: InkWell(
+              //     onTap: () {
+              //       print('Кнопка 1');
+              //     },
+              //     child: Image.asset(
+              //       MyImages.easyLevel,
+              //       width: 100,
+              //     ),
+              //   ),
+              // ),
+              //
+              // // Кнопка 1
+              // Positioned(
+              //   left: 120,
+              //   top: 950,
+              //   child: InkWell(
+              //     onTap: () {
+              //       print('Кнопка 1');
+              //     },
+              //     child: Image.asset(
+              //       MyImages.easyLevel,
+              //       width: 100,
+              //     ),
+              //   ),
+              // ),
+              //
+              // Positioned(
+              //   left: 10,
+              //   top: 1080,
+              //   child: InkWell(
+              //     onTap: () {
+              //       print('Кнопка 1');
+              //     },
+              //     child: Image.asset(
+              //       MyImages.easyLevel,
+              //       width: 100,
+              //     ),
+              //   ),
+              // ),
+              //
+              //
+              // // Кнопка 1
+              // Positioned(
+              //   left: 75,
+              //   top: 1210,
+              //   child: InkWell(
+              //     onTap: () {
+              //       print('Hard 1');
+              //     },
+              //     child: Image.asset(
+              //       MyImages.hardLevel,
+              //       width: 110,
+              //     ),
+              //   ),
+              // ),
+              // // Кнопка 1
+              // Positioned(
+              //   left: 10,
+              //   top: 1600,
+              //   child: InkWell(
+              //     onTap: () {
+              //       print('Hard 1');
+              //     },
+              //     child: Image.asset(
+              //       MyImages.statue,
+              //       width: 400,
+              //     ),
+              //   ),
+              // ),
+
+            ],
+          ),
         ),
-        separatorBuilder: (_,i) => const SizedBox(height: 24,),
-        itemCount: data.length,
       ),
-      backgroundColor: const Color(0xFF373550),
-      // іконки знизу navigation bar
-      // bottomNavigationBar: Container(
-      //   decoration: BoxDecoration(
-      //     border: Border(
-      //       top: BorderSide(
-      //         color: Colors.white
-      //       )
-      //     )
-      //   ),
-      //   child: BottomNavigationBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation:0, //висота
-      //   showSelectedLabels: false,
-      //   showUnselectedLabels: false,
-      //   type: BottomNavigationBarType.fixed,
-      //   items: [
-      //     BottomNavigationBarItem(
-      //         icon: SvgPicture.asset(
-      //           'asstes/назва',
-      //           width: 32,
-      //           height: 32,
-      //         ),
-      //       label: '',
-      //     )
-      //   ]),
-      // ),// можна скільки хочеш цих іконок знизу робити
     );
   }
 }
