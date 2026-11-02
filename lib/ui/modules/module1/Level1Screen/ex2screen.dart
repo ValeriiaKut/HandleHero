@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:handle_hero/bloc/exercise2/exercise2_bloc.dart';
+import 'package:handle_hero/bloc/exercise2/exercise2_event.dart';
+import 'package:handle_hero/bloc/exercise2/exercise2_state.dart';
+import 'package:handle_hero/bloc/level/level_bloc.dart';
+import 'package:handle_hero/bloc/level/level_state.dart';
+import 'package:handle_hero/data/module_catalog.dart';
+import 'package:handle_hero/ui/modules/module1/Level1Screen/ex3screen.dart';
+import 'package:handle_hero/ui/modules/module1/Level1Screen/level1screen.dart';
+import 'package:handle_hero/utils/my_images.dart';
+import 'package:handle_hero/widgets/answer_result_dialog.dart';
+import 'package:handle_hero/widgets/lives_bar.dart';
+import 'package:handle_hero/widgets/out_of_lives_dialog.dart';
+import 'package:handle_hero/widgets/letter_sign.dart';
+
+class Ex2screen extends StatelessWidget {
+  const Ex2screen({super.key, this.moduleIndex = 0});
+
+  final int moduleIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) =>
+          Exercise2Bloc(letters: ModuleCatalog.lettersFor(moduleIndex))
+            ..add(Exercise2Started()),
+      child: _Ex2View(moduleIndex: moduleIndex),
+    );
+  }
+}
+
+class _Ex2View extends StatelessWidget {
+  const _Ex2View({required this.moduleIndex});
+  final int moduleIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LevelBloc, LevelState>(
+          listenWhen: (previous, current) =>
+              previous.isOutOfLives && !current.isOutOfLives,
+          listener: (context, state) {
+            context.read<Exercise2Bloc>().add(Exercise2FeedbackCleared());
+          },
+        ),
+        BlocListener<Exercise2Bloc, Exercise2State>(
+          listenWhen: (previous, current) =>
+              !previous.hasFeedback && current.hasFeedback,
+          listener: (context, state) {
+            final isCorrect = state.isCorrect ?? false;
+            if (!isCorrect) {
+              handleWrongAnswer(
+                context: context,
+                moduleIndex: moduleIndex,
+                onTryAgain: () {
+                  context.read<Exercise2Bloc>().add(Exercise2FeedbackCleared());
+                },
+              );
+              return;
+            }
+
+            showAnswerResultDialog(
+              context: context,
+              isCorrect: true,
+              confirmLabel: 'Finish',
+              onConfirm: () {
+                Navigator.pop(context);
+                context.read<Exercise2Bloc>().add(Exercise2FeedbackCleared());
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Ex3screen(moduleIndex: moduleIndex),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ],
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(MyImages.background, fit: BoxFit.cover),
+            ),
+            LevelHeader(
+              onBack: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Level1screen(moduleIndex: moduleIndex),
+                  ),
+                );
+              },
+            ),
+            Positioned(
+              top: 100,
+              left: 0,
+              right: 0,
+              child: BlocBuilder<Exercise2Bloc, Exercise2State>(
+                builder: (context, state) {
+                  return Text(
+                    'Find letter ${state.targetLetter}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.lightBlueAccent,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 100, left: 10, right: 10),
+                child: Column(
+                  children: [
+                    for (final option in ModuleCatalog.lettersFor(
+                      moduleIndex,
+                    )) ...[
+                      InkWell(
+                        onTap: () => context.read<Exercise2Bloc>().add(
+                          Exercise2AnswerSelected(option.letter),
+                        ),
+                        child: LetterSign(option: option, size: 130),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

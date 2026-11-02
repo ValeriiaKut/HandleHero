@@ -12,8 +12,17 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
+  flutter_bloc: ^9.1.1
   flutter_native_splash: ^2.3.0
   flutter_svg: ^2.2.4
+  camera: ^0.12.0+2
+  hand_detection: ^4.1.0
+
+hooks:
+  user_defines:
+    dartcv4:
+      ios:
+        generator: Ninja
 
 flutter_launcher_icons:
   image_path: "assets/SplashScreen.png"
