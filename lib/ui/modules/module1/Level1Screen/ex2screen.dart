@@ -23,7 +23,10 @@ class Ex2screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          Exercise2Bloc(letters: ModuleCatalog.lettersFor(moduleIndex))
+          Exercise2Bloc(
+              letters: ModuleCatalog.lettersFor(moduleIndex),
+              challengeMode: ModuleCatalog.isHardLevel(moduleIndex),
+            )
             ..add(Exercise2Started()),
       child: _Ex2View(moduleIndex: moduleIndex),
     );
@@ -61,19 +64,32 @@ class _Ex2View extends StatelessWidget {
               return;
             }
 
+            final isHard = ModuleCatalog.isHardLevel(moduleIndex);
+            final hasMoreQuestions =
+                isHard && state.questionIndex < state.totalQuestions - 1;
             showAnswerResultDialog(
               context: context,
               isCorrect: true,
-              confirmLabel: 'Finish',
+              confirmLabel: hasMoreQuestions
+                  ? 'Next'
+                  : isHard
+                  ? 'Finish'
+                  : 'Next',
               onConfirm: () {
                 Navigator.pop(context);
-                context.read<Exercise2Bloc>().add(Exercise2FeedbackCleared());
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Ex3screen(moduleIndex: moduleIndex),
-                  ),
-                );
+                if (hasMoreQuestions) {
+                  context.read<Exercise2Bloc>().add(Exercise2NextQuestion());
+                } else {
+                  context.read<Exercise2Bloc>().add(
+                    Exercise2FeedbackCleared(),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Ex3screen(moduleIndex: moduleIndex),
+                    ),
+                  );
+                }
               },
             );
           },
@@ -102,10 +118,14 @@ class _Ex2View extends StatelessWidget {
               child: BlocBuilder<Exercise2Bloc, Exercise2State>(
                 builder: (context, state) {
                   return Text(
-                    'Find letter ${state.targetLetter}',
+                    ModuleCatalog.isHardLevel(moduleIndex)
+                        ? '${state.questionIndex + 1}/${state.totalQuestions} · FIND ${state.targetLetter}'
+                        : 'Find letter ${state.targetLetter}',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 28,
+                    style: TextStyle(
+                      fontSize: ModuleCatalog.isHardLevel(moduleIndex)
+                          ? 22
+                          : 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.lightBlueAccent,
                     ),

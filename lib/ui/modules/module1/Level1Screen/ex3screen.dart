@@ -51,23 +51,18 @@ class _Ex3View extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.completed.length == totalPairs) {
-          final isHard = ModuleCatalog.isHardLevel(moduleIndex);
           showAnswerResultDialog(
             context: context,
             isCorrect: true,
-            confirmLabel: isHard ? 'Map' : 'Next',
+            confirmLabel: 'Next',
             onConfirm: () {
               Navigator.pop(context);
-              if (isHard) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              } else {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Ex4screen(moduleIndex: moduleIndex),
-                  ),
-                );
-              }
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Ex4screen(moduleIndex: moduleIndex),
+                ),
+              );
             },
           );
           return;

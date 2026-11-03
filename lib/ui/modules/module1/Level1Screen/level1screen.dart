@@ -56,10 +56,12 @@ class _Level1screenState extends State<Level1screen> {
             left: 0,
             right: 0,
             child: Text(
-              letters.map((item) => item.letter).join(' - '),
+              isHard
+                  ? 'CHALLENGE ${widget.moduleIndex ~/ 4 + 1}'
+                  : letters.map((item) => item.letter).join(' - '),
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 32,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Colors.lightBlueAccent,
               ),
@@ -71,7 +73,7 @@ class _Level1screenState extends State<Level1screen> {
             right: 16,
             child: Text(
               isHard
-                  ? 'Review modules ${((widget.moduleIndex ~/ 4) * 3) + 1}–${((widget.moduleIndex ~/ 4) * 3) + 3}'
+                  ? 'Recall ${letters.length} letters from modules ${((widget.moduleIndex ~/ 4) * 3) + 1}–${((widget.moduleIndex ~/ 4) * 3) + 3}'
                   : 'Study each sign, then try the activities',
               textAlign: TextAlign.center,
               style: const TextStyle(
@@ -82,7 +84,7 @@ class _Level1screenState extends State<Level1screen> {
             ),
           ),
           if (isHard)
-            _hardReviewList(letters)
+            _hardChallengeOverview(letters.length)
           else if (letters.isNotEmpty)
             _flashcards(context, letters),
           if (isHard)
@@ -91,7 +93,7 @@ class _Level1screenState extends State<Level1screen> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: _pixelButton(
-                  label: 'START REVIEW',
+                  label: 'START CHALLENGE',
                   onPressed: () => _startPractice(context),
                 ),
               ),
@@ -101,37 +103,100 @@ class _Level1screenState extends State<Level1screen> {
     );
   }
 
-  Widget _hardReviewList(List<LetterOption> letters) {
+  Widget _hardChallengeOverview(int letterCount) {
+    final steps = [
+      (
+        'SIGN RECOGNITION',
+        'Identify $letterCount handshapes in shuffled order.',
+      ),
+      (
+        'LETTER TO HANDSHAPE',
+        'Find the matching sign for each target letter.',
+      ),
+      ('MATCH ALL PAIRS', 'Connect all $letterCount signs and letters.'),
+      (
+        'SENTENCE CHALLENGE',
+        'Fill the missing letter in $letterCount sentences.',
+      ),
+    ];
     return Positioned.fill(
-      top: 246,
-      bottom: 90,
+      top: 256,
+      bottom: 92,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.fromLTRB(22, 4, 22, 8),
         child: ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          itemCount: letters.length,
+          itemCount: steps.length,
           separatorBuilder: (context, index) => const SizedBox(height: 8),
-          itemBuilder: (context, index) {
-            final letter = letters[index];
-            return SizedBox(
-              height: 130,
-              child: Row(
+          itemBuilder: (context, index) => _challengeStep(
+            number: '${index + 1}',
+            title: steps[index].$1,
+            description: steps[index].$2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _challengeStep({
+    required String number,
+    required String title,
+    required String description,
+  }) {
+    return SizedBox(
+      height: 86,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFE9A8),
+          border: Border.all(color: const Color(0xFF6B3E26), width: 4),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                color: Color(0xFF6B3E26),
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                number,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  LetterSign(option: letter, size: 115),
-                  const SizedBox(width: 24),
                   Text(
-                    letter.letter,
+                    title,
                     style: const TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.lightBlueAccent,
+                      color: Color(0xFF4A291B),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      color: Color(0xFF6B3E26),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
                     ),
                   ),
                 ],
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );
