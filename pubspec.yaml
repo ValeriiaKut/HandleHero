@@ -12,8 +12,33 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
+  flutter_bloc: ^9.1.1
   flutter_native_splash: ^2.3.0
   flutter_svg: ^2.2.4
+  camera: ^0.12.0+2
+  hand_detection: ^4.1.0
+  flutter_litert: ^3.9.4
+  image: ^4.8.0
+
+hooks:
+  user_defines:
+    dartcv4:
+      ios:
+        generator: Ninja
+
+flutter_launcher_icons:
+  image_path: "assets/SplashScreen.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  adaptive_icon_background: "#F6F1E4"
+  adaptive_icon_foreground: "assets/SplashScreen.png"
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#F6F1E4"
+  android: true
+  ios: false
 
 dev_dependencies:
   flutter_test:
@@ -25,21 +50,12 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/model.tflite
   fonts:
     - family: PressStart2P
       fonts:
         - asset: fonts/PressStart2P-Regular.ttf
 
 
-flutter_native_splash:
-  color: "#000000"
-  image: assets/images/SplashScreen.png
-  android: true
-  ios: true
-  android_gravity: fill  # заповнює весь екран, зберігаючи пропорції
-  ios_content_mode: scaleToFill
-  android_12:
-    android_gravity: fill
-    image: assets/images/SplashScreen.png
 
 
