@@ -23,7 +23,10 @@ class Ex1screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          Exercise1Bloc(letters: ModuleCatalog.lettersFor(moduleIndex))
+          Exercise1Bloc(
+              letters: ModuleCatalog.lettersFor(moduleIndex),
+              challengeMode: ModuleCatalog.isHardLevel(moduleIndex),
+            )
             ..add(Exercise1Started()),
       child: _Ex1View(moduleIndex: moduleIndex),
     );
@@ -61,19 +64,32 @@ class _Ex1View extends StatelessWidget {
               return;
             }
 
+            final isHard = ModuleCatalog.isHardLevel(moduleIndex);
+            final hasMoreQuestions =
+                isHard && state.questionIndex < state.totalQuestions - 1;
             showAnswerResultDialog(
               context: context,
               isCorrect: true,
-              confirmLabel: 'Next',
+              confirmLabel: hasMoreQuestions
+                  ? 'Next'
+                  : isHard
+                  ? 'Finish'
+                  : 'Next',
               onConfirm: () {
                 Navigator.pop(context);
-                context.read<Exercise1Bloc>().add(Exercise1FeedbackCleared());
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Ex2screen(moduleIndex: moduleIndex),
-                  ),
-                );
+                if (hasMoreQuestions) {
+                  context.read<Exercise1Bloc>().add(Exercise1NextQuestion());
+                } else {
+                  context.read<Exercise1Bloc>().add(
+                    Exercise1FeedbackCleared(),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Ex2screen(moduleIndex: moduleIndex),
+                    ),
+                  );
+                }
               },
             );
           },
@@ -95,17 +111,21 @@ class _Ex1View extends StatelessWidget {
                 );
               },
             ),
-            const Positioned(
+            Positioned(
               top: 100,
               left: 0,
               right: 0,
-              child: Text(
-                'What letter is this?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.lightBlueAccent,
+              child: BlocBuilder<Exercise1Bloc, Exercise1State>(
+                builder: (context, state) => Text(
+                  ModuleCatalog.isHardLevel(moduleIndex)
+                      ? 'SIGN ${state.questionIndex + 1}/${state.totalQuestions} · NAME THE LETTER'
+                      : 'What letter is this?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: ModuleCatalog.isHardLevel(moduleIndex) ? 16 : 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.lightBlueAccent,
+                  ),
                 ),
               ),
             ),
@@ -113,7 +133,7 @@ class _Ex1View extends StatelessWidget {
               alignment: Alignment.center,
               child: BlocBuilder<Exercise1Bloc, Exercise1State>(
                 builder: (context, state) {
-                  if (state.currentImage.isEmpty) {
+                  if (state.correctAnswer.isEmpty) {
                     return const SizedBox.shrink();
                   }
                   final option = ModuleCatalog.lettersFor(

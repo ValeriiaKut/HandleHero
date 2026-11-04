@@ -23,7 +23,10 @@ class Ex2screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          Exercise2Bloc(letters: ModuleCatalog.lettersFor(moduleIndex))
+          Exercise2Bloc(
+              letters: ModuleCatalog.lettersFor(moduleIndex),
+              challengeMode: ModuleCatalog.isHardLevel(moduleIndex),
+            )
             ..add(Exercise2Started()),
       child: _Ex2View(moduleIndex: moduleIndex),
     );
@@ -61,19 +64,32 @@ class _Ex2View extends StatelessWidget {
               return;
             }
 
+            final isHard = ModuleCatalog.isHardLevel(moduleIndex);
+            final hasMoreQuestions =
+                isHard && state.questionIndex < state.totalQuestions - 1;
             showAnswerResultDialog(
               context: context,
               isCorrect: true,
-              confirmLabel: 'Finish',
+              confirmLabel: hasMoreQuestions
+                  ? 'Next'
+                  : isHard
+                  ? 'Finish'
+                  : 'Next',
               onConfirm: () {
                 Navigator.pop(context);
-                context.read<Exercise2Bloc>().add(Exercise2FeedbackCleared());
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Ex3screen(moduleIndex: moduleIndex),
-                  ),
-                );
+                if (hasMoreQuestions) {
+                  context.read<Exercise2Bloc>().add(Exercise2NextQuestion());
+                } else {
+                  context.read<Exercise2Bloc>().add(
+                    Exercise2FeedbackCleared(),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Ex3screen(moduleIndex: moduleIndex),
+                    ),
+                  );
+                }
               },
             );
           },
@@ -102,10 +118,14 @@ class _Ex2View extends StatelessWidget {
               child: BlocBuilder<Exercise2Bloc, Exercise2State>(
                 builder: (context, state) {
                   return Text(
-                    'Find letter ${state.targetLetter}',
+                    ModuleCatalog.isHardLevel(moduleIndex)
+                        ? '${state.questionIndex + 1}/${state.totalQuestions} · FIND ${state.targetLetter}'
+                        : 'Find letter ${state.targetLetter}',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 28,
+                    style: TextStyle(
+                      fontSize: ModuleCatalog.isHardLevel(moduleIndex)
+                          ? 22
+                          : 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.lightBlueAccent,
                     ),
@@ -113,24 +133,63 @@ class _Ex2View extends StatelessWidget {
                 },
               ),
             ),
-            Align(
-              alignment: Alignment.topCenter,
+            Positioned.fill(
+              top: 158,
+              bottom: 32,
               child: Padding(
-                padding: const EdgeInsets.only(top: 100, left: 10, right: 10),
-                child: Column(
-                  children: [
-                    for (final option in ModuleCatalog.lettersFor(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: ModuleCatalog.lettersFor(moduleIndex).length,
+                  gridDelegate:
+                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 180,
+                        mainAxisSpacing: 14,
+                        crossAxisSpacing: 14,
+                        childAspectRatio: 0.92,
+                      ),
+                  itemBuilder: (context, index) {
+                    final option = ModuleCatalog.lettersFor(
                       moduleIndex,
-                    )) ...[
-                      InkWell(
+                    )[index];
+                    return Material(
+                      color: const Color(0xFFFFE9A8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(
+                          color: Color(0xFF6B3E26),
+                          width: 4,
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
                         onTap: () => context.read<Exercise2Bloc>().add(
                           Exercise2AnswerSelected(option.letter),
                         ),
-                        child: LetterSign(option: option, size: 130),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) => Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              LetterSign(
+                                option: option,
+                                size: constraints.maxWidth * 0.68,
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'SIGN ${index + 1}',
+                                style: const TextStyle(
+                                  color: Color(0xFF6B3E26),
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 11,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                    ],
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
