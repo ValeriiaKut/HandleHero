@@ -25,6 +25,10 @@ hooks:
     dartcv4:
       ios:
         generator: Ninja
+        cmake_version: "3.22.1"
+        prefer_android_cmake: true
+        ninja_version: "1.10.2"
+        prefer_android_ninja: true
 
 flutter_launcher_icons:
   image_path: "assets/SplashScreen.png"

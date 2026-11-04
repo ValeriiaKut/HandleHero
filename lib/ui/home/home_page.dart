@@ -105,21 +105,21 @@ class HomePage extends StatelessWidget {
                       left: 10,
                       top: 420,
                       child: _StatueCameraButton(
-                        onTap: () => _openCamera(context),
+                        onTap: () => _openCamera(context, challengeIndex: 0),
                       ),
                     ),
                     Positioned(
                       left: 10,
                       top: 1150,
                       child: _StatueCameraButton(
-                        onTap: () => _openCamera(context),
+                        onTap: () => _openCamera(context, challengeIndex: 1),
                       ),
                     ),
                     Positioned(
                       left: 10,
                       top: 1890,
                       child: _StatueCameraButton(
-                        onTap: () => _openCamera(context),
+                        onTap: () => _openCamera(context, challengeIndex: 2),
                       ),
                     ),
                   ],
@@ -132,10 +132,12 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _openCamera(BuildContext context) {
+  void _openCamera(BuildContext context, {required int challengeIndex}) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const CameraGuessScreen()),
+      MaterialPageRoute(
+        builder: (_) => CameraGuessScreen(challengeIndex: challengeIndex),
+      ),
     );
   }
 }
