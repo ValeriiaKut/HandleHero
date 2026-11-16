@@ -20,14 +20,13 @@ class LetterSign extends StatelessWidget {
       height: size,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF1C7),
-        border: Border.all(color: const Color(0xFF6B3E26), width: 5),
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFF382630),
+        border: Border.all(color: const Color(0xFF817B6B), width: 5),
       ),
       child: Text(
         option.letter,
         style: TextStyle(
-          color: const Color(0xFF6B3E26),
+          color: const Color(0xFFFFD55A),
           fontSize: size * .55,
           fontWeight: FontWeight.w900,
         ),

@@ -11,6 +11,7 @@ import 'package:handle_hero/bloc/camera/camera_state.dart';
 import 'package:handle_hero/data/camera_service.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class CameraGuessScreen extends StatelessWidget {
   const CameraGuessScreen({
@@ -262,29 +263,24 @@ class _FreePracticePanel extends StatelessWidget {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 440),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFE3A3),
-        border: Border.all(color: const Color(0xFF3D2117), width: 4),
-        boxShadow: const [
-          BoxShadow(color: Color(0xFF3D2117), offset: Offset(4, 4)),
-        ],
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.camera_alt, color: Color(0xFF6B3E26), size: 26),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'SHOW ANY LETTER SIGN · NO TEST',
-              style: TextStyle(
-                color: Color(0xFF3D2117),
-                fontSize: 11,
-                fontWeight: FontWeight.w900,
+      child: TreasureWindow(
+        title: 'FREE PRACTICE',
+        child: const Row(
+          children: [
+            Icon(Icons.camera_alt, color: Color(0xFFFFD55A), size: 26),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'SHOW ANY LETTER SIGN · NO TEST',
+                style: TextStyle(
+                  color: Color(0xFFFFE8B2),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -305,16 +301,10 @@ class _ChallengeTargetPanel extends StatelessWidget {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 440),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFE3A3),
-        border: Border.all(color: const Color(0xFF3D2117), width: 4),
-        boxShadow: const [
-          BoxShadow(color: Color(0xFF3D2117), offset: Offset(4, 4)),
-        ],
-      ),
-      child: Row(
-        children: [
+      child: TreasureWindow(
+        title: 'CURRENT LETTER',
+        child: Row(
+          children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,7 +313,7 @@ class _ChallengeTargetPanel extends StatelessWidget {
                 const Text(
                   'SHOW THE SIGN FOR',
                   style: TextStyle(
-                    color: Color(0xFF6B3E26),
+                    color: Color(0xFFD5C7AC),
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -331,7 +321,7 @@ class _ChallengeTargetPanel extends StatelessWidget {
                 Text(
                   state.targetLetter ?? '✓',
                   style: const TextStyle(
-                    color: Color(0xFF147C9B),
+                    color: Color(0xFFFFD55A),
                     fontSize: 34,
                     fontWeight: FontWeight.w900,
                   ),
@@ -345,7 +335,7 @@ class _ChallengeTargetPanel extends StatelessWidget {
               Text(
                 'LETTER $displayedQuestion / $total',
                 style: const TextStyle(
-                  color: Color(0xFF3D2117),
+                  color: Color(0xFFFFE8B2),
                   fontSize: 9,
                   fontWeight: FontWeight.bold,
                 ),
@@ -359,14 +349,15 @@ class _ChallengeTargetPanel extends StatelessWidget {
                       height: 8,
                       margin: const EdgeInsets.only(left: 3),
                       color: index < state.questionIndex
-                          ? const Color(0xFF147C9B)
-                          : const Color(0xFFB99A65),
+                          ? const Color(0xFFFFD55A)
+                          : const Color(0xFF75606D),
                     ),
                 ],
               ),
             ],
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -393,31 +384,24 @@ class _ChallengeEndOverlay extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Container(
-              width: double.infinity,
+            child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 380),
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFE3A3),
-                border: Border.all(color: const Color(0xFF3D2117), width: 5),
-                boxShadow: const [
-                  BoxShadow(color: Color(0xFF3D2117), offset: Offset(7, 7)),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+              child: TreasureWindow(
+                title: isSuccess ? 'Challenge Complete' : 'Try Again',
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                   Image.asset(
                     isSuccess ? MyImages.success : MyImages.lose,
-                    width: 108,
+                    width: 90,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    isSuccess ? 'CHALLENGE COMPLETE!' : 'OUT OF HEARTS',
+                    isSuccess ? 'ALL FIVE LETTERS FOUND!' : 'TRY THE CHALLENGE AGAIN',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Color(0xFF3D2117),
-                      fontSize: 15,
+                      color: Color(0xFFFFE8B2),
+                      fontSize: 11,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -428,7 +412,7 @@ class _ChallengeEndOverlay extends StatelessWidget {
                         : 'Try the 5-letter challenge again.',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Color(0xFF6B3E26),
+                      color: Color(0xFFD5C7AC),
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                     ),
@@ -439,19 +423,22 @@ class _ChallengeEndOverlay extends StatelessWidget {
                     spacing: 10,
                     runSpacing: 10,
                     children: [
-                      _PixelCameraButton(
-                        icon: Icons.replay,
+                      TreasureButton(
                         label: 'PLAY AGAIN',
                         onPressed: onRetry,
+                        tone: TreasureButtonTone.green,
+                        icon: Icons.replay,
                       ),
-                      _PixelCameraButton(
-                        icon: Icons.map,
+                      TreasureButton(
                         label: 'BACK TO MAP',
                         onPressed: onExit,
+                        tone: TreasureButtonTone.red,
+                        icon: Icons.map,
                       ),
                     ],
                   ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -481,16 +468,10 @@ class _PixelLetterResult extends StatelessWidget {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 440),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFE3A3),
-        border: Border.all(color: const Color(0xFF3D2117), width: 4),
-        boxShadow: const [
-          BoxShadow(color: Color(0xFF3D2117), offset: Offset(4, 4)),
-        ],
-      ),
-      child: Row(
-        children: [
+      child: TreasureWindow(
+        title: 'LETTER RECOGNITION',
+        child: Row(
+          children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,7 +481,7 @@ class _PixelLetterResult extends StatelessWidget {
                   status,
                   maxLines: 2,
                   style: const TextStyle(
-                    color: Color(0xFF3D2117),
+                    color: Color(0xFFFFE8B2),
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -513,7 +494,7 @@ class _PixelLetterResult extends StatelessWidget {
                     maxLines: 6,
                     overflow: TextOverflow.clip,
                     style: const TextStyle(
-                      color: Color(0xFF7A241E),
+                      color: Color(0xFFE88975),
                       fontFamily: null,
                       fontSize: 10,
                       fontWeight: FontWeight.normal,
@@ -528,13 +509,14 @@ class _PixelLetterResult extends StatelessWidget {
             state.predictedLetter ?? (state.isClassifierReady ? '—' : '!'),
             style: TextStyle(
               color: state.isClassifierReady
-                  ? const Color(0xFF147C9B)
-                  : const Color(0xFFB3261E),
+              ? const Color(0xFFFFD55A)
+              : const Color(0xFFE88975),
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -622,14 +604,14 @@ class _PixelCameraFrame extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFF3D2117),
-        boxShadow: [BoxShadow(color: Color(0xFF3D2117), offset: Offset(0, 8))],
+        color: Color(0xFF817B6B),
+        boxShadow: [BoxShadow(color: Color(0xFF28202A), offset: Offset(0, 8))],
       ),
       padding: const EdgeInsets.all(8),
       child: CustomPaint(
         foregroundPainter: _SciFiCameraFramePainter(),
         child: Container(
-          color: const Color(0xFFFFE3A3),
+          color: const Color(0xFF382630),
           padding: const EdgeInsets.all(5),
           child: ClipRect(child: child),
         ),

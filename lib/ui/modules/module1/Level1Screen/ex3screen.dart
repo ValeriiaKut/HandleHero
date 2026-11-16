@@ -227,10 +227,10 @@ class _Ex3View extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     final color = isDone
-        ? const Color(0xFF5FA56C)
+        ? const Color(0xFF547541)
         : isSelected
-        ? const Color(0xFFE6A23C)
-        : const Color(0xFF6B3E26);
+        ? const Color(0xFF9A5737)
+        : const Color(0xFF382630);
     return _matchingTile(
       width: 70,
       height: 70,
@@ -256,7 +256,7 @@ class _Ex3View extends StatelessWidget {
     return _matchingTile(
       width: 82,
       height: 82,
-      color: isDone ? const Color(0xFFB8D8A8) : const Color(0xFFFFF1C7),
+      color: isDone ? const Color(0xFF547541) : const Color(0xFF382630),
       isDone: isDone,
       onTap: onTap,
       child: LetterSign(option: option, size: 72),
@@ -275,9 +275,9 @@ class _Ex3View extends StatelessWidget {
       opacity: isDone ? 0.72 : 1,
       child: Material(
         color: color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(color: Color(0xFF4A291B), width: 4),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+          side: BorderSide(color: Color(0xFF817B6B), width: 4),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(

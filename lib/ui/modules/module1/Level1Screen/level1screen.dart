@@ -8,6 +8,7 @@ import 'package:handle_hero/ui/modules/module1/Level1Screen/ex1screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class Level1screen extends StatefulWidget {
   const Level1screen({super.key, this.moduleIndex = 0});
@@ -147,9 +148,8 @@ class _Level1screenState extends State<Level1screen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFE9A8),
-          border: Border.all(color: const Color(0xFF6B3E26), width: 4),
-          borderRadius: BorderRadius.circular(12),
+          color: const Color(0xFF382630),
+          border: Border.all(color: const Color(0xFF817B6B), width: 4),
         ),
         child: Row(
           children: [
@@ -158,7 +158,7 @@ class _Level1screenState extends State<Level1screen> {
               height: 36,
               alignment: Alignment.center,
               decoration: const BoxDecoration(
-                color: Color(0xFF6B3E26),
+                color: Color(0xFF9A5737),
                 shape: BoxShape.circle,
               ),
               child: Text(
@@ -179,7 +179,7 @@ class _Level1screenState extends State<Level1screen> {
                   Text(
                     title,
                     style: const TextStyle(
-                      color: Color(0xFF4A291B),
+                      color: Color(0xFFFFD55A),
                       fontWeight: FontWeight.w900,
                       fontSize: 12,
                     ),
@@ -188,7 +188,7 @@ class _Level1screenState extends State<Level1screen> {
                   Text(
                     description,
                     style: const TextStyle(
-                      color: Color(0xFF6B3E26),
+                      color: Color(0xFFFFE8B2),
                       fontWeight: FontWeight.w600,
                       fontSize: 11,
                     ),
@@ -313,7 +313,7 @@ class _Level1screenState extends State<Level1screen> {
           const Text(
             'WHAT LETTER IS THIS?',
             style: TextStyle(
-              color: Color(0xFF6B3E26),
+              color: Color(0xFFFFD55A),
               fontSize: 13,
               fontWeight: FontWeight.w900,
               letterSpacing: 0.7,
@@ -333,7 +333,7 @@ class _Level1screenState extends State<Level1screen> {
           const Text(
             'Tap to reveal',
             style: TextStyle(
-              color: Color(0xFF6B3E26),
+              color: Color(0xFFFFE8B2),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -351,7 +351,7 @@ class _Level1screenState extends State<Level1screen> {
           Text(
             'LETTER ${letter.letter}',
             style: const TextStyle(
-              color: Color(0xFF6B3E26),
+              color: Color(0xFFFFD55A),
               fontSize: 28,
               fontWeight: FontWeight.w900,
             ),
@@ -365,7 +365,7 @@ class _Level1screenState extends State<Level1screen> {
               child: Text(
                 'The sign illustration for this letter has not been added yet.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFF6B3E26)),
+                style: TextStyle(color: Color(0xFFFFE8B2)),
               ),
             ),
         ],
@@ -378,19 +378,19 @@ class _Level1screenState extends State<Level1screen> {
       width: 150,
       height: 150,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8E5),
-        border: Border.all(color: const Color(0xFF6B3E26), width: 4),
+        color: const Color(0xFF382630),
+        border: Border.all(color: const Color(0xFF817B6B), width: 4),
       ),
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.pan_tool_alt, size: 54, color: Color(0xFF6B3E26)),
+          Icon(Icons.pan_tool_alt, size: 54, color: Color(0xFFFFD55A)),
           SizedBox(height: 8),
           Text(
             'SIGN IMAGE\nCOMING SOON',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFF6B3E26),
+              color: Color(0xFFFFE8B2),
               fontSize: 10,
               fontWeight: FontWeight.bold,
             ),
@@ -401,20 +401,7 @@ class _Level1screenState extends State<Level1screen> {
   }
 
   Widget _cardShell({required Key key, required Widget child}) {
-    return Container(
-      key: key,
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFE9A8),
-        border: Border.all(color: const Color(0xFF6B3E26), width: 6),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(color: Color(0x88000000), offset: Offset(0, 7), blurRadius: 0),
-        ],
-      ),
-      child: child,
-    );
+    return TreasureWindow(key: key, child: child);
   }
 
   Widget _pixelButton({
@@ -422,32 +409,10 @@ class _Level1screenState extends State<Level1screen> {
     required VoidCallback? onPressed,
     bool secondary = false,
   }) {
-    return SizedBox(
-      height: 48,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: secondary
-              ? const Color(0xFF6B3E26)
-              : const Color(0xFFFFD166),
-          foregroundColor: secondary ? Colors.white : const Color(0xFF4A291B),
-          disabledBackgroundColor: const Color(0xFF765949),
-          disabledForegroundColor: Colors.white54,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-            side: const BorderSide(color: Color(0xFF4A291B), width: 3),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-        ),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            label,
-            style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12),
-          ),
-        ),
-      ),
+    return TreasureButton(
+      label: label,
+      onPressed: onPressed,
+      tone: secondary ? TreasureButtonTone.red : TreasureButtonTone.green,
     );
   }
 

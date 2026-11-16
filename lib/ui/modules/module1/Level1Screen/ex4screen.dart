@@ -170,12 +170,11 @@ class _Ex4View extends StatelessWidget {
                                   vertical: 28,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFFE9A8),
+                                  color: const Color(0xFF382630),
                                   border: Border.all(
-                                    color: const Color(0xFF6B3E26),
+                                    color: const Color(0xFF817B6B),
                                     width: 6,
                                   ),
-                                  borderRadius: BorderRadius.circular(16),
                                   boxShadow: const [
                                     BoxShadow(
                                       color: Color(0x77000000),
@@ -237,14 +236,13 @@ class _Ex4View extends StatelessWidget {
       height: 52,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFD166),
-        border: Border.all(color: const Color(0xFF6B3E26), width: 4),
-        boxShadow: const [BoxShadow(color: Color(0x667A3A1C), blurRadius: 4)],
+        color: const Color(0xFF9A5737),
+        border: Border.all(color: const Color(0xFF28202A), width: 4),
       ),
       child: Text(
         revealAnswer ? question.letter.toLowerCase() : '?',
         style: const TextStyle(
-          color: const Color(0xFF4A291B),
+          color: const Color(0xFFFFE8B2),
           fontSize: 28,
           fontWeight: FontWeight.w900,
         ),
@@ -253,7 +251,7 @@ class _Ex4View extends StatelessWidget {
     return Text.rich(
       TextSpan(
         style: const TextStyle(
-          color: const Color(0xFF4A291B),
+          color: const Color(0xFFFFE8B2),
           fontSize: 24,
           fontWeight: FontWeight.w800,
           height: 1.45,
@@ -284,10 +282,10 @@ class _LetterChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFFFFD166),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: Color(0xFF4A291B), width: 4),
+      color: const Color(0xFF382630),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero,
+        side: BorderSide(color: Color(0xFF817B6B), width: 4),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(

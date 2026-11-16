@@ -153,12 +153,12 @@ class _Ex2View extends StatelessWidget {
                       moduleIndex,
                     )[index];
                     return Material(
-                      color: const Color(0xFFFFE9A8),
+                      color: const Color(0xFF382630),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.zero,
                         side: const BorderSide(
-                          color: Color(0xFF6B3E26),
-                          width: 4,
+                          color: Color(0xFF817B6B),
+                          width: 5,
                         ),
                       ),
                       clipBehavior: Clip.antiAlias,
@@ -178,7 +178,7 @@ class _Ex2View extends StatelessWidget {
                               Text(
                                 'SIGN ${index + 1}',
                                 style: const TextStyle(
-                                  color: Color(0xFF6B3E26),
+                                  color: Color(0xFFFFD55A),
                                   fontWeight: FontWeight.w900,
                                   fontSize: 11,
                                   letterSpacing: 0.8,

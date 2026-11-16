@@ -5,9 +5,11 @@ import 'package:handle_hero/bloc/home/home_state.dart';
 import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_event.dart';
 import 'package:handle_hero/ui/home/camera_guess_screen.dart';
+import 'package:handle_hero/ui/home/dictionary_tab.dart';
 import 'package:handle_hero/ui/modules/module1/Level1Screen/level1screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/level_buttom.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -134,6 +136,8 @@ class _HomePageState extends State<HomePage> {
                 challengeIndex: 0,
                 practiceMode: true,
               )
+            : _selectedTab == 3
+            ? const DictionaryTab()
             : _HomeTabPlaceholder(title: switch (_selectedTab) {
                 0 => 'ДРУЗІ',
                 3 => 'СЛОВНИК',
@@ -277,21 +281,15 @@ class _HomeTabPlaceholder extends StatelessWidget {
       children: [
         Image.asset(MyImages.background, fit: BoxFit.cover),
         Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 64, color: const Color(0xFFFFE3A3)),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: TreasureWindow(
+              title: title,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                child: Icon(icon, size: 64, color: const Color(0xFFFFD55A)),
               ),
-            ],
+            ),
           ),
         ),
       ],

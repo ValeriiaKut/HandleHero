@@ -7,6 +7,7 @@ import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_event.dart';
 import 'package:handle_hero/ui/modules/module1/Level1Screen/level1screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 
 Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
   return showDialog<void>(
@@ -18,40 +19,36 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
           final levelState = context.read<LevelBloc>().state;
           final canAfford = homeState.coins >= levelState.continueCost;
 
-          return AlertDialog(
-            backgroundColor: const Color(0xFF6B3E26),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero,
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(MyImages.lose, width: 130),
-                const SizedBox(height: 12),
-                const Text(
-                  'No lives left!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.redAccent,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Coins: ${homeState.coins}',
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            actionsAlignment: MainAxisAlignment.center,
-            actions: [
-              Column(
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: TreasureWindow(
+              title: 'Treasure Chest',
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextButton(
+                  Image.asset(MyImages.lose, width: 110),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'NO LIVES LEFT',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFFFFD55A),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'COINS: ${homeState.coins}',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFFFFE8B2),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TreasureButton(
+                    label: 'RESTART',
+                    tone: TreasureButtonTone.green,
                     onPressed: () {
                       Navigator.pop(dialogContext);
                       context.read<LevelBloc>().add(LevelStarted());
@@ -63,23 +60,23 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                         (route) => route.isFirst,
                       );
                     },
-                    child: const Text(
-                      'Restart',
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    ),
                   ),
-                  TextButton(
+                  const SizedBox(height: 6),
+                  TreasureButton(
+                    label: 'HOME',
+                    tone: TreasureButtonTone.red,
                     onPressed: () {
                       Navigator.pop(dialogContext);
                       context.read<LevelBloc>().add(LevelStarted());
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     },
-                    child: const Text(
-                      'Home',
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    ),
                   ),
-                  TextButton(
+                  const SizedBox(height: 6),
+                  TreasureButton(
+                    label: canAfford
+                        ? 'CONTINUE · ${levelState.continueCost} COINS'
+                        : 'NEED ${levelState.continueCost} COINS',
+                    tone: TreasureButtonTone.wood,
                     onPressed: canAfford
                         ? () {
                             context.read<HomeBloc>().add(
@@ -89,37 +86,10 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                             Navigator.pop(dialogContext);
                           }
                         : null,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          canAfford
-                              ? 'Continue'
-                              : 'Need ${levelState.continueCost}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: canAfford
-                                ? Colors.amber
-                                : Colors.white38,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Image.asset(MyImages.coin, width: 18),
-                        Text(
-                          '${levelState.continueCost}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: canAfford
-                                ? Colors.amber
-                                : Colors.white38,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               ),
-            ],
+            ),
           );
         },
       );
@@ -144,41 +114,26 @@ void handleWrongAnswer({
   showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (_) => AlertDialog(
-      backgroundColor: const Color(0xFF6B3E26),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(MyImages.lose, width: 150),
-          const SizedBox(height: 15),
-          const Text(
-            'Wrong!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
+    builder: (_) => Dialog(
+      backgroundColor: Colors.transparent,
+      child: TreasureWindow(
+        title: 'Try Again',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(MyImages.lose, width: 110),
+            const SizedBox(height: 12),
+            TreasureButton(
+              label: 'TRY AGAIN',
+              tone: TreasureButtonTone.red,
+              onPressed: () {
+                Navigator.pop(context);
+                onTryAgain();
+              },
             ),
-          ),
-        ],
-      ),
-      actions: [
-        Center(
-          child: TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              onTryAgain();
-            },
-            child: const Text(
-              'Try Again',
-              style: TextStyle(fontSize: 20, color: Colors.white),
-            ),
-          ),
+          ],
         ),
-      ],
+      ),
     ),
   );
 }

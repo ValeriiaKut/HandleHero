@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handle_hero/ui/modules/module1/Level1Screen/ex2screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class Successscreen extends StatelessWidget {
   const Successscreen({super.key});
@@ -18,28 +19,18 @@ class Successscreen extends StatelessWidget {
           ),
 
           Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  MyImages.success,
-                  width: 200,
-                ),
-
-                const SizedBox(height: 20),
-
-                const Text(
-                  'Correct!',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-
-                ElevatedButton(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: TreasureWindow(
+                title: 'Victory',
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(MyImages.success, width: 130),
+                    const SizedBox(height: 16),
+                    TreasureButton(
+                      label: 'NEXT',
+                      tone: TreasureButtonTone.green,
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
@@ -47,10 +38,11 @@ class Successscreen extends StatelessWidget {
                         builder: (_) =>  Ex2screen(),
                       ),
                     );
-                  },
-                  child: const Text('Next'),
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],
