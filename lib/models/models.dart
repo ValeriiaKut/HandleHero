@@ -16,7 +16,7 @@ class LevelData {
 
 class LetterOption {
   final String letter;
-  final String? image;
+  final String image;
 
   const LetterOption(this.letter, this.image);
 }

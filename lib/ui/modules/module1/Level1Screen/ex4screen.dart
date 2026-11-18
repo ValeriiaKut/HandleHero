@@ -12,6 +12,7 @@ import 'package:handle_hero/ui/modules/module1/Level1Screen/level1screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/answer_result_dialog.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
 import 'package:handle_hero/widgets/out_of_lives_dialog.dart';
 
@@ -100,23 +101,27 @@ class _Ex4View extends StatelessWidget {
               right: 16,
               child: Column(
                 children: [
-                  Text(
-                    'COMPLETE THE SENTENCE',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
+                  TreasureLabel(
+                    child: Text(
+                      'COMPLETE THE SENTENCE',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFFFFE8B2),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    'Choose the missing letter from this level',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                  TreasureLabel(
+                    child: Text(
+                      'Choose the missing letter from this level',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFFFFE8B2),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -140,12 +145,18 @@ class _Ex4View extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       children: [
-                        Text(
-                          'SENTENCE ${state.questionIndex + 1} OF ${state.questions.length}',
-                          style: const TextStyle(
-                            color: const Color(0xFFFFE9A8),
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1,
+                        TreasureLabel(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          child: Text(
+                            'SENTENCE ${state.questionIndex + 1} OF ${state.questions.length}',
+                            style: const TextStyle(
+                              color: Color(0xFFFFE8B2),
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 9),
@@ -162,30 +173,33 @@ class _Ex4View extends StatelessWidget {
                         ),
                         Expanded(
                           child: Center(
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 28,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF382630),
-                                  border: Border.all(
-                                    color: const Color(0xFF817B6B),
-                                    width: 6,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 560),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 18,
+                                    vertical: 28,
                                   ),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x77000000),
-                                      offset: Offset(0, 7),
-                                      blurRadius: 0,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF382630),
+                                    border: Border.all(
+                                      color: const Color(0xFF817B6B),
+                                      width: 6,
                                     ),
-                                  ],
-                                ),
-                                child: _sentenceText(
-                                  question,
-                                  revealAnswer: state.isCorrect == true,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x77000000),
+                                        offset: Offset(0, 7),
+                                        blurRadius: 0,
+                                      ),
+                                    ],
+                                  ),
+                                  child: _sentenceText(
+                                    question,
+                                    revealAnswer: state.isCorrect == true,
+                                  ),
                                 ),
                               ),
                             ),
@@ -283,10 +297,6 @@ class _LetterChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: const Color(0xFF382630),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-        side: BorderSide(color: Color(0xFF817B6B), width: 4),
-      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,

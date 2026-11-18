@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handle_hero/bloc/exercise4/exercise4_event.dart';
 import 'package:handle_hero/bloc/exercise4/exercise4_state.dart';
 import 'package:handle_hero/data/sentence_activities.dart';
+import 'package:handle_hero/data/module_catalog.dart';
 import 'package:handle_hero/models/models.dart';
 
 class Exercise4Bloc extends Bloc<Exercise4Event, Exercise4State> {
@@ -22,7 +23,9 @@ class Exercise4Bloc extends Bloc<Exercise4Event, Exercise4State> {
 
   void _onStarted(Exercise4Started event, Emitter<Exercise4State> emit) {
     final questions = SentenceActivities.forLetters(
-      _letters.map((letter) => LetterOption(letter, null)).toList(),
+      ModuleCatalog.allLetters
+          .where((option) => _letters.contains(option.letter))
+          .toList(),
     )..shuffle(_random);
     emit(
       Exercise4State(

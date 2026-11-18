@@ -12,10 +12,7 @@ class Losescreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              MyImages.background,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(MyImages.background, fit: BoxFit.cover),
           ),
 
           Center(
@@ -31,13 +28,11 @@ class Losescreen extends StatelessWidget {
                     TreasureButton(
                       label: 'TRY AGAIN',
                       tone: TreasureButtonTone.red,
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const Ex1screen(),
-                      ),
-                    );
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const Ex1screen()),
+                        );
                       },
                     ),
                   ],

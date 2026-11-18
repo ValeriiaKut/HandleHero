@@ -110,10 +110,7 @@ class _Level1screenState extends State<Level1screen> {
         'SIGN RECOGNITION',
         'Identify $letterCount handshapes in shuffled order.',
       ),
-      (
-        'LETTER TO HANDSHAPE',
-        'Find the matching sign for each target letter.',
-      ),
+      ('LETTER TO HANDSHAPE', 'Find the matching sign for each target letter.'),
       ('MATCH ALL PAIRS', 'Connect all $letterCount signs and letters.'),
       (
         'SENTENCE CHALLENGE',
@@ -125,13 +122,18 @@ class _Level1screenState extends State<Level1screen> {
       bottom: 92,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(22, 4, 22, 8),
-        child: ListView.separated(
-          itemCount: steps.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 8),
-          itemBuilder: (context, index) => _challengeStep(
-            number: '${index + 1}',
-            title: steps[index].$1,
-            description: steps[index].$2,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: ListView.separated(
+              itemCount: steps.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
+              itemBuilder: (context, index) => _challengeStep(
+                number: '${index + 1}',
+                title: steps[index].$1,
+                description: steps[index].$2,
+              ),
+            ),
           ),
         ),
       ),
@@ -204,101 +206,118 @@ class _Level1screenState extends State<Level1screen> {
 
   Widget _flashcards(BuildContext context, List<LetterOption> letters) {
     final letter = letters[_cardIndex.clamp(0, letters.length - 1)];
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final compact = screenHeight < 700;
     return Positioned.fill(
-      top: 164,
-      bottom: 24,
+      top: screenHeight * .20,
+      bottom: compact ? 12 : 24,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 4, 24, 8),
-        child: Column(
-          children: [
-            Text(
-              'CARD ${_cardIndex + 1} OF ${letters.length}',
-              style: const TextStyle(
-                color: Color(0xFFFFE9A8),
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 9),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: LinearProgressIndicator(
-                minHeight: 8,
-                value: (_cardIndex + 1) / letters.length,
-                backgroundColor: const Color(0xFF6B3E26),
-                color: const Color(0xFFFFD166),
-              ),
-            ),
-            const SizedBox(height: 14),
-            Expanded(
-              child: GestureDetector(
-                onTap: () => setState(() => _showAnswer = !_showAnswer),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 260),
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(scale: animation, child: child),
-                  ),
-                  child: _showAnswer
-                      ? _answerCard(letter)
-                      : _questionCard(letter),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              _showAnswer
-                  ? 'Remember the letter and handshape'
-                  : 'Look at the sign, then tap the card to reveal the letter',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
+        padding: EdgeInsets.fromLTRB(
+          (MediaQuery.sizeOf(context).width * .06).clamp(18.0, 32.0),
+          4,
+          (MediaQuery.sizeOf(context).width * .06).clamp(18.0, 32.0),
+          8,
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Column(
               children: [
-                Expanded(
-                  child: _pixelButton(
-                    label: 'BACK',
-                    onPressed: _cardIndex == 0
-                        ? null
-                        : () => setState(() {
-                            _cardIndex--;
-                            _showAnswer = false;
-                          }),
-                    secondary: true,
+                TreasureLabel(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  child: Text(
+                    'CARD ${_cardIndex + 1} OF ${letters.length}',
+                    style: const TextStyle(
+                      color: Color(0xFFFFE8B2),
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: _pixelButton(
-                    label: !_showAnswer
-                        ? 'REVEAL LETTER'
-                        : _cardIndex == letters.length - 1
-                        ? 'START PRACTICE'
-                        : 'NEXT LETTER',
-                    onPressed: () {
-                      if (!_showAnswer) {
-                        setState(() => _showAnswer = true);
-                      } else if (_cardIndex < letters.length - 1) {
-                        setState(() {
-                          _cardIndex++;
-                          _showAnswer = false;
-                        });
-                      } else {
-                        _startPractice(context);
-                      }
-                    },
+                SizedBox(height: compact ? 5 : 9),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    minHeight: 8,
+                    value: (_cardIndex + 1) / letters.length,
+                    backgroundColor: const Color(0xFF6B3E26),
+                    color: const Color(0xFFFFD166),
                   ),
+                ),
+                SizedBox(height: compact ? 8 : 14),
+                Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _showAnswer = !_showAnswer),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 260),
+                      transitionBuilder: (child, animation) => FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(scale: animation, child: child),
+                      ),
+                      child: _showAnswer
+                          ? _answerCard(letter)
+                          : _questionCard(letter),
+                    ),
+                  ),
+                ),
+                SizedBox(height: compact ? 6 : 12),
+                TreasureLabel(
+                  child: Text(
+                    _showAnswer
+                        ? 'LETTER AND HANDSHAPE'
+                        : 'STUDY THE HANDSHAPE',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFFFFE8B2),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(height: compact ? 6 : 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _pixelButton(
+                        label: 'BACK',
+                        onPressed: _cardIndex == 0
+                            ? null
+                            : () => setState(() {
+                                _cardIndex--;
+                                _showAnswer = false;
+                              }),
+                        secondary: true,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: _pixelButton(
+                        label: _cardIndex == letters.length - 1
+                            ? 'START PRACTICE'
+                            : 'NEXT LETTER',
+                        onPressed: () {
+                          if (_cardIndex < letters.length - 1) {
+                            setState(() {
+                              _cardIndex++;
+                              _showAnswer = false;
+                            });
+                          } else {
+                            _startPractice(context);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -310,33 +329,25 @@ class _Level1screenState extends State<Level1screen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'WHAT LETTER IS THIS?',
-            style: TextStyle(
-              color: Color(0xFFFFD55A),
-              fontSize: 13,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.7,
+          TreasureLabel(
+            child: Text(
+              'SIGN FOR LETTER ${letter.letter}',
+              style: const TextStyle(
+                color: Color(0xFFFFE8B2),
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.7,
+              ),
             ),
           ),
           const SizedBox(height: 16),
-          if (letter.image != null)
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final size = math.min(205.0, constraints.maxHeight * .52);
-                return LetterSign(option: letter, size: size);
-              },
-            )
-          else
-            _missingSignCard(),
-          const SizedBox(height: 12),
-          const Text(
-            'Tap to reveal',
-            style: TextStyle(
-              color: Color(0xFFFFE8B2),
-              fontWeight: FontWeight.bold,
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final size = math.min(275.0, constraints.maxHeight * .68);
+              return LetterSign(option: letter, size: size);
+            },
           ),
+          const SizedBox(height: 12),
         ],
       ),
     );
@@ -348,52 +359,22 @@ class _Level1screenState extends State<Level1screen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'LETTER ${letter.letter}',
-            style: const TextStyle(
-              color: Color(0xFFFFD55A),
-              fontSize: 28,
-              fontWeight: FontWeight.w900,
+          TreasureLabel(
+            child: Text(
+              'LETTER ${letter.letter}',
+              style: const TextStyle(
+                color: Color(0xFFFFE8B2),
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
           const SizedBox(height: 12),
-          if (letter.image != null)
-            LetterSign(option: letter, size: 112)
-          else
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18),
-              child: Text(
-                'The sign illustration for this letter has not been added yet.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFFFFE8B2)),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _missingSignCard() {
-    return Container(
-      width: 150,
-      height: 150,
-      decoration: BoxDecoration(
-        color: const Color(0xFF382630),
-        border: Border.all(color: const Color(0xFF817B6B), width: 4),
-      ),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.pan_tool_alt, size: 54, color: Color(0xFFFFD55A)),
-          SizedBox(height: 8),
-          Text(
-            'SIGN IMAGE\nCOMING SOON',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFFFFE8B2),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final size = math.min(210.0, constraints.maxHeight * .65);
+              return LetterSign(option: letter, size: size);
+            },
           ),
         ],
       ),
@@ -401,7 +382,7 @@ class _Level1screenState extends State<Level1screen> {
   }
 
   Widget _cardShell({required Key key, required Widget child}) {
-    return TreasureWindow(key: key, child: child);
+    return KeyedSubtree(key: key, child: child);
   }
 
   Widget _pixelButton({

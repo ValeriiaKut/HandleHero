@@ -26,13 +26,11 @@ class CameraGuessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          CameraBloc(
-              CameraService(),
-              challengeIndex: challengeIndex,
-              practiceMode: practiceMode,
-            )
-            ..add(CameraStarted()),
+      create: (_) => CameraBloc(
+        CameraService(),
+        challengeIndex: challengeIndex,
+        practiceMode: practiceMode,
+      )..add(CameraStarted()),
       child: _CameraGuessView(
         challengeIndex: challengeIndex,
         practiceMode: practiceMode,
@@ -122,14 +120,15 @@ class _CameraGuessViewState extends State<_CameraGuessView>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (state.canSwitchCamera)
-                        _PixelCameraButton(
-                          icon: Icons.cameraswitch,
-                          label: 'SWITCH CAMERA',
-                          onPressed: () => context.read<CameraBloc>().add(
-                            CameraSwitchRequested(),
-                          ),
-                        ),
+                      _PixelCameraButton(
+                        icon: Icons.cameraswitch,
+                        label: 'SWITCH CAMERA',
+                        onPressed: state.canSwitchCamera
+                            ? () => context.read<CameraBloc>().add(
+                                CameraSwitchRequested(),
+                              )
+                            : null,
+                      ),
                     ],
                   ),
                 ),
@@ -175,7 +174,7 @@ class _CameraGuessViewState extends State<_CameraGuessView>
             Expanded(
               child: Text(
                 widget.practiceMode
-                    ? 'FREE CAMERA PRACTICE'
+                    ? ''
                     : 'CHALLENGE ${widget.challengeIndex + 1} · $letterRange',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
@@ -264,14 +263,13 @@ class _FreePracticePanel extends StatelessWidget {
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 440),
       child: TreasureWindow(
-        title: 'FREE PRACTICE',
+        title: 'PRACTICE',
         child: const Row(
           children: [
-            Icon(Icons.camera_alt, color: Color(0xFFFFD55A), size: 26),
-            SizedBox(width: 12),
             Expanded(
               child: Text(
-                'SHOW ANY LETTER SIGN · NO TEST',
+                'SHOW ANY LETTER SIGN',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFFFFE8B2),
                   fontSize: 10,
@@ -305,57 +303,57 @@ class _ChallengeTargetPanel extends StatelessWidget {
         title: 'CURRENT LETTER',
         child: Row(
           children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'SHOW THE SIGN FOR',
+                    style: TextStyle(
+                      color: Color(0xFFD5C7AC),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    state.targetLetter ?? '✓',
+                    style: const TextStyle(
+                      color: Color(0xFFFFD55A),
+                      fontSize: 34,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Text(
-                  'SHOW THE SIGN FOR',
-                  style: TextStyle(
-                    color: Color(0xFFD5C7AC),
-                    fontSize: 10,
+                Text(
+                  'LETTER $displayedQuestion / $total',
+                  style: const TextStyle(
+                    color: Color(0xFFFFE8B2),
+                    fontSize: 9,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  state.targetLetter ?? '✓',
-                  style: const TextStyle(
-                    color: Color(0xFFFFD55A),
-                    fontSize: 34,
-                    fontWeight: FontWeight.w900,
-                  ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    for (var index = 0; index < total; index++)
+                      Container(
+                        width: 20,
+                        height: 8,
+                        margin: const EdgeInsets.only(left: 3),
+                        color: index < state.questionIndex
+                            ? const Color(0xFFFFD55A)
+                            : const Color(0xFF75606D),
+                      ),
+                  ],
                 ),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'LETTER $displayedQuestion / $total',
-                style: const TextStyle(
-                  color: Color(0xFFFFE8B2),
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  for (var index = 0; index < total; index++)
-                    Container(
-                      width: 20,
-                      height: 8,
-                      margin: const EdgeInsets.only(left: 3),
-                      color: index < state.questionIndex
-                          ? const Color(0xFFFFD55A)
-                          : const Color(0xFF75606D),
-                    ),
-                ],
-              ),
-            ],
-          ),
           ],
         ),
       ),
@@ -391,52 +389,54 @@ class _ChallengeEndOverlay extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                  Image.asset(
-                    isSuccess ? MyImages.success : MyImages.lose,
-                    width: 90,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    isSuccess ? 'ALL FIVE LETTERS FOUND!' : 'TRY THE CHALLENGE AGAIN',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFFFFE8B2),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900,
+                    Image.asset(
+                      isSuccess ? MyImages.success : MyImages.lose,
+                      width: 90,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    isSuccess
-                        ? 'You identified all 5 letters.'
-                        : 'Try the 5-letter challenge again.',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFFD5C7AC),
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 12),
+                    Text(
+                      isSuccess
+                          ? 'ALL FIVE LETTERS FOUND!'
+                          : 'TRY THE CHALLENGE AGAIN',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFFFFE8B2),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 18),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: [
-                      TreasureButton(
-                        label: 'PLAY AGAIN',
-                        onPressed: onRetry,
-                        tone: TreasureButtonTone.green,
-                        icon: Icons.replay,
+                    const SizedBox(height: 8),
+                    Text(
+                      isSuccess
+                          ? 'You identified all 5 letters.'
+                          : 'Try the 5-letter challenge again.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFFD5C7AC),
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
                       ),
-                      TreasureButton(
-                        label: 'BACK TO MAP',
-                        onPressed: onExit,
-                        tone: TreasureButtonTone.red,
-                        icon: Icons.map,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 18),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        TreasureButton(
+                          label: 'PLAY AGAIN',
+                          onPressed: onRetry,
+                          tone: TreasureButtonTone.green,
+                          icon: Icons.replay,
+                        ),
+                        TreasureButton(
+                          label: 'BACK TO MAP',
+                          onPressed: onExit,
+                          tone: TreasureButtonTone.red,
+                          icon: Icons.map,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -460,7 +460,7 @@ class _PixelLetterResult extends StatelessWidget {
         : state.feedback != null
         ? state.feedback!
         : state.predictedLetter != null
-        ? 'I SEE THIS LETTER'
+        ? 'THIS LETTER IS '
         : state.hands.isNotEmpty
         ? 'RECOGNIZING...'
         : 'SHOW YOUR HAND';
@@ -472,49 +472,49 @@ class _PixelLetterResult extends StatelessWidget {
         title: 'LETTER RECOGNITION',
         child: Row(
           children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  status,
-                  maxLines: 2,
-                  style: const TextStyle(
-                    color: Color(0xFFFFE8B2),
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (!state.isClassifierReady &&
-                    state.classifierError != null) ...[
-                  const SizedBox(height: 4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Text(
-                    state.classifierError!,
-                    maxLines: 6,
-                    overflow: TextOverflow.clip,
+                    status,
+                    maxLines: 2,
                     style: const TextStyle(
-                      color: Color(0xFFE88975),
-                      fontFamily: null,
-                      fontSize: 10,
-                      fontWeight: FontWeight.normal,
+                      color: Color(0xFFFFE8B2),
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  if (!state.isClassifierReady &&
+                      state.classifierError != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      state.classifierError!,
+                      maxLines: 6,
+                      overflow: TextOverflow.clip,
+                      style: const TextStyle(
+                        color: Color(0xFFE88975),
+                        fontFamily: null,
+                        fontSize: 10,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            state.predictedLetter ?? (state.isClassifierReady ? '—' : '!'),
-            style: TextStyle(
-              color: state.isClassifierReady
-              ? const Color(0xFFFFD55A)
-              : const Color(0xFFE88975),
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
+            const SizedBox(width: 12),
+            Text(
+              state.predictedLetter ?? (state.isClassifierReady ? '—' : '!'),
+              style: TextStyle(
+                color: state.isClassifierReady
+                    ? const Color(0xFFFFD55A)
+                    : const Color(0xFFE88975),
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
           ],
         ),
       ),

@@ -11,21 +11,33 @@ Future<void> showAnswerResultDialog({
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (_) => Dialog(
+    builder: (dialogContext) => Dialog(
       backgroundColor: Colors.transparent,
-      child: TreasureWindow(
-        title: isCorrect ? 'Correct!' : 'Wrong!',
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(isCorrect ? MyImages.success : MyImages.lose, width: 120),
-            const SizedBox(height: 12),
-            TreasureButton(
-              label: confirmLabel,
-              onPressed: onConfirm,
-              tone: isCorrect ? TreasureButtonTone.green : TreasureButtonTone.red,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(dialogContext).height * .88,
+        ),
+        child: SingleChildScrollView(
+          child: TreasureWindow(
+            title: isCorrect ? 'Correct!' : 'Wrong!',
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  isCorrect ? MyImages.success : MyImages.lose,
+                  width: 120,
+                ),
+                const SizedBox(height: 12),
+                TreasureButton(
+                  label: confirmLabel,
+                  onPressed: onConfirm,
+                  tone: isCorrect
+                      ? TreasureButtonTone.green
+                      : TreasureButtonTone.red,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     ),

@@ -13,6 +13,7 @@ import 'package:handle_hero/widgets/answer_result_dialog.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
 import 'package:handle_hero/widgets/out_of_lives_dialog.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class Ex1screen extends StatelessWidget {
   const Ex1screen({super.key, this.moduleIndex = 0});
@@ -22,12 +23,10 @@ class Ex1screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          Exercise1Bloc(
-              letters: ModuleCatalog.lettersFor(moduleIndex),
-              challengeMode: ModuleCatalog.isHardLevel(moduleIndex),
-            )
-            ..add(Exercise1Started()),
+      create: (_) => Exercise1Bloc(
+        letters: ModuleCatalog.lettersFor(moduleIndex),
+        challengeMode: ModuleCatalog.isHardLevel(moduleIndex),
+      )..add(Exercise1Started()),
       child: _Ex1View(moduleIndex: moduleIndex),
     );
   }
@@ -80,9 +79,7 @@ class _Ex1View extends StatelessWidget {
                 if (hasMoreQuestions) {
                   context.read<Exercise1Bloc>().add(Exercise1NextQuestion());
                 } else {
-                  context.read<Exercise1Bloc>().add(
-                    Exercise1FeedbackCleared(),
-                  );
+                  context.read<Exercise1Bloc>().add(Exercise1FeedbackCleared());
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -116,15 +113,21 @@ class _Ex1View extends StatelessWidget {
               left: 0,
               right: 0,
               child: BlocBuilder<Exercise1Bloc, Exercise1State>(
-                builder: (context, state) => Text(
-                  ModuleCatalog.isHardLevel(moduleIndex)
-                      ? 'SIGN ${state.questionIndex + 1}/${state.totalQuestions} · NAME THE LETTER'
-                      : 'What letter is this?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: ModuleCatalog.isHardLevel(moduleIndex) ? 16 : 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.lightBlueAccent,
+                builder: (context, state) => Center(
+                  child: TreasureLabel(
+                    child: Text(
+                      ModuleCatalog.isHardLevel(moduleIndex)
+                          ? 'SIGN ${state.questionIndex + 1}/${state.totalQuestions} · NAME THE LETTER'
+                          : 'What letter is this?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: ModuleCatalog.isHardLevel(moduleIndex)
+                            ? 16
+                            : 18,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFFFFE8B2),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -139,7 +142,14 @@ class _Ex1View extends StatelessWidget {
                   final option = ModuleCatalog.lettersFor(
                     moduleIndex,
                   ).firstWhere((item) => item.letter == state.correctAnswer);
-                  return LetterSign(option: option, size: 250);
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      final size = (constraints.maxWidth * .82)
+                          .clamp(250.0, 330.0)
+                          .clamp(0.0, constraints.maxHeight * .52);
+                      return LetterSign(option: option, size: size);
+                    },
+                  );
                 },
               ),
             ),

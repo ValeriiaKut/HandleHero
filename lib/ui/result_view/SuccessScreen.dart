@@ -12,10 +12,7 @@ class Successscreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              MyImages.background,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(MyImages.background, fit: BoxFit.cover),
           ),
 
           Center(
@@ -31,13 +28,11 @@ class Successscreen extends StatelessWidget {
                     TreasureButton(
                       label: 'NEXT',
                       tone: TreasureButtonTone.green,
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>  Ex2screen(),
-                      ),
-                    );
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => Ex2screen()),
+                        );
                       },
                     ),
                   ],

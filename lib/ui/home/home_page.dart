@@ -25,128 +25,133 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 60,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(MyImages.appBar),
-                fit: BoxFit.fill,
-                filterQuality: FilterQuality.none,
-              ),
-            ),
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(MyImages.coin, width: 22),
-                      const SizedBox(width: 6),
-                      Text(
-                        '${state.coins}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-        body: _selectedTab == 2
-            ? BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              child: SizedBox(
-                width: double.infinity,
-                height: 2250,
-                child: Stack(
+        appBar: _selectedTab == 2
+            ? AppBar(
+                toolbarHeight: 60,
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                flexibleSpace: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(MyImages.appBar),
+                      fit: BoxFit.fill,
+                      filterQuality: FilterQuality.none,
+                    ),
+                  ),
+                ),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(MyImages.grass),
-                            repeat: ImageRepeat.repeatY,
-                          ),
-                        ),
-                      ),
-                    ),
-                    for (
-                      var levelIndex = 0;
-                      levelIndex < state.levels.length;
-                      levelIndex++
-                    )
-                      LevelButton(
-                        left: state.levels[levelIndex].left,
-                        top: state.levels[levelIndex].top,
-                        backgroundImage: state.levels[levelIndex].bg,
-                        numberImage: state.levels[levelIndex].number,
-                        onTap: () {
-                          context.read<LevelBloc>().add(LevelStarted());
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  Level1screen(moduleIndex: levelIndex),
+                    BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(MyImages.coin, width: 22),
+                            const SizedBox(width: 6),
+                            Text(
+                              '${state.coins}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        },
-                      ),
-                    Positioned(
-                      left: 10,
-                      top: 420,
-                      child: _StatueCameraButton(
-                        onTap: () => _openCamera(context, challengeIndex: 0),
-                      ),
-                    ),
-                    Positioned(
-                      left: 10,
-                      top: 1150,
-                      child: _StatueCameraButton(
-                        onTap: () => _openCamera(context, challengeIndex: 1),
-                      ),
-                    ),
-                    Positioned(
-                      left: 10,
-                      top: 1890,
-                      child: _StatueCameraButton(
-                        onTap: () => _openCamera(context, challengeIndex: 2),
-                      ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
-              ),
-            );
-          },
-        )
-            : _selectedTab == 1
-            ? const CameraGuessScreen(
-                challengeIndex: 0,
-                practiceMode: true,
               )
+            : null,
+        body: _selectedTab == 2
+            ? BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return SingleChildScrollView(
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 2250,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(MyImages.grass),
+                                  repeat: ImageRepeat.repeatY,
+                                ),
+                              ),
+                            ),
+                          ),
+                          for (
+                            var levelIndex = 0;
+                            levelIndex < state.levels.length;
+                            levelIndex++
+                          )
+                            LevelButton(
+                              left: state.levels[levelIndex].left,
+                              top: state.levels[levelIndex].top,
+                              backgroundImage: state.levels[levelIndex].bg,
+                              numberImage: state.levels[levelIndex].number,
+                              onTap: () {
+                                context.read<LevelBloc>().add(LevelStarted());
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        Level1screen(moduleIndex: levelIndex),
+                                  ),
+                                );
+                              },
+                            ),
+                          Positioned(
+                            left: 10,
+                            top: 420,
+                            child: _StatueCameraButton(
+                              onTap: () =>
+                                  _openCamera(context, challengeIndex: 0),
+                            ),
+                          ),
+                          Positioned(
+                            left: 10,
+                            top: 1150,
+                            child: _StatueCameraButton(
+                              onTap: () =>
+                                  _openCamera(context, challengeIndex: 1),
+                            ),
+                          ),
+                          Positioned(
+                            left: 10,
+                            top: 1890,
+                            child: _StatueCameraButton(
+                              onTap: () =>
+                                  _openCamera(context, challengeIndex: 2),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              )
+            : _selectedTab == 1
+            ? const CameraGuessScreen(challengeIndex: 0, practiceMode: true)
             : _selectedTab == 3
             ? const DictionaryTab()
-            : _HomeTabPlaceholder(title: switch (_selectedTab) {
-                0 => 'ДРУЗІ',
-                3 => 'СЛОВНИК',
-                _ => 'МІЙ АККАУНТ',
-              }, icon: switch (_selectedTab) {
-                0 => Icons.people_alt_outlined,
-                3 => Icons.menu_book_outlined,
-                _ => Icons.person_outline,
-              }),
+            : _HomeTabPlaceholder(
+                title: switch (_selectedTab) {
+                  0 => 'FRIENDS',
+                  3 => 'DICTIONARY',
+                  _ => 'MY ACCOUNT',
+                },
+                icon: switch (_selectedTab) {
+                  0 => Icons.people_alt_outlined,
+                  3 => Icons.menu_book_outlined,
+                  _ => Icons.person_outline,
+                },
+              ),
         bottomNavigationBar: Container(
           height: 60,
           decoration: BoxDecoration(
@@ -213,15 +218,55 @@ class _PixelTabIcon extends StatelessWidget {
 
   static const _patterns = [
     // Friends
-    ['.##.##.', '.##.##.', '..#.#..', '###.###', '#.#.#.#', '###.###', '.#...#.'],
+    [
+      '.##.##.',
+      '.##.##.',
+      '..#.#..',
+      '###.###',
+      '#.#.#.#',
+      '###.###',
+      '.#...#.',
+    ],
     // Learning: open book
-    ['#######', '#..#..#', '#..#..#', '#..#..#', '#..#..#', '#..#..#', '#######'],
+    [
+      '#######',
+      '#..#..#',
+      '#..#..#',
+      '#..#..#',
+      '#..#..#',
+      '#..#..#',
+      '#######',
+    ],
     // Try Yourself: target
-    ['..###..', '.#...#.', '#..#..#', '#.###.#', '#..#..#', '.#...#.', '..###..'],
+    [
+      '..###..',
+      '.#...#.',
+      '#..#..#',
+      '#.###.#',
+      '#..#..#',
+      '.#...#.',
+      '..###..',
+    ],
     // Dictionary
-    ['####.##', '#..#.#.#', '#..#.#.#', '####.#.#', '#..#.#.#', '#..#.#.#', '####.##'],
+    [
+      '####.##',
+      '#..#.#.#',
+      '#..#.#.#',
+      '####.#.#',
+      '#..#.#.#',
+      '#..#.#.#',
+      '####.##',
+    ],
     // Account
-    ['..###..', '.#...#.', '.#...#.', '..###..', '...#...', '.#####.', '#.....#'],
+    [
+      '..###..',
+      '.#...#.',
+      '.#...#.',
+      '..###..',
+      '...#...',
+      '.#####.',
+      '#.....#',
+    ],
   ];
 
   @override
@@ -283,11 +328,14 @@ class _HomeTabPlaceholder extends StatelessWidget {
         Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: TreasureWindow(
-              title: title,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                child: Icon(icon, size: 64, color: const Color(0xFFFFD55A)),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: TreasureWindow(
+                title: title,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  child: Icon(icon, size: 64, color: const Color(0xFFFFD55A)),
+                ),
               ),
             ),
           ),

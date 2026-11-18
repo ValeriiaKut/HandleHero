@@ -10,6 +10,7 @@ import 'package:handle_hero/utils/LinePainter.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/answer_result_dialog.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
+import 'package:handle_hero/widgets/treasure_ui.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
 import 'package:handle_hero/widgets/out_of_lives_dialog.dart';
 
@@ -89,24 +90,28 @@ class _Ex3View extends StatelessWidget {
                 child: BlocBuilder<Exercise3Bloc, Exercise3State>(
                   builder: (context, state) => Column(
                     children: [
-                      const Text(
-                        'MATCH THE PAIRS',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.lightBlueAccent,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 20,
-                          letterSpacing: 1,
+                      const TreasureLabel(
+                        child: Text(
+                          'MATCH THE PAIRS',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFFFFE8B2),
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                            letterSpacing: 1,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 7),
-                      const Text(
-                        'Tap a letter, then tap its ASL handshape',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                      const TreasureLabel(
+                        child: Text(
+                          'Tap a letter, then tap its ASL handshape',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFFFFE8B2),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 18),
@@ -114,24 +119,36 @@ class _Ex3View extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Center(
-                              child: Text(
-                                'LETTER',
-                                style: TextStyle(
-                                  color: Color(0xFFFFE9A8),
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1,
+                              child: TreasureLabel(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  'LETTER',
+                                  style: TextStyle(
+                                    color: Color(0xFFFFE8B2),
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                           Expanded(
                             child: Center(
-                              child: Text(
-                                'HANDSHAPE',
-                                style: TextStyle(
-                                  color: Color(0xFFFFE9A8),
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1,
+                              child: TreasureLabel(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  'HANDSHAPE',
+                                  style: TextStyle(
+                                    color: Color(0xFFFFE8B2),
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1,
+                                  ),
                                 ),
                               ),
                             ),
@@ -141,7 +158,12 @@ class _Ex3View extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: SingleChildScrollView(
-                          child: _matchingBoard(context, state),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 560),
+                              child: _matchingBoard(context, state),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -260,6 +282,7 @@ class _Ex3View extends StatelessWidget {
       isDone: isDone,
       onTap: onTap,
       child: LetterSign(option: option, size: 72),
+      showBorder: false,
     );
   }
 
@@ -270,14 +293,17 @@ class _Ex3View extends StatelessWidget {
     required bool isDone,
     required VoidCallback onTap,
     required Widget child,
+    bool showBorder = true,
   }) {
     return Opacity(
       opacity: isDone ? 0.72 : 1,
       child: Material(
         color: color,
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
-          side: BorderSide(color: Color(0xFF817B6B), width: 4),
+          side: showBorder
+              ? const BorderSide(color: Color(0xFF817B6B), width: 4)
+              : BorderSide.none,
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(

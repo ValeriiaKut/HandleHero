@@ -1,17 +1,11 @@
 import 'package:handle_hero/models/models.dart';
 
 class ModuleCatalog {
-  static const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-  static const _availableSigns = <String, String>{
-    'A': 'assets/images/A.png',
-    'B': 'assets/images/B.png',
-    'C': 'assets/images/C.png',
-  };
+  static const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
 
   static final allLetters = alphabet
       .split('')
-      .map((letter) => LetterOption(letter, _availableSigns[letter]))
+      .map((letter) => LetterOption(letter, 'assets/images/$letter-k.png'))
       .toList(growable: false);
 
   /// The map order is three regular levels followed by one hard level,

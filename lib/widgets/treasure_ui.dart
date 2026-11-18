@@ -2,27 +2,38 @@ import 'package:flutter/material.dart';
 
 /// Reusable pixel-art frame for dialogs and content windows.
 class TreasureWindow extends StatelessWidget {
-  const TreasureWindow({super.key, required this.child, this.title});
+  const TreasureWindow({
+    super.key,
+    required this.child,
+    this.title,
+    this.showFrame = true,
+  });
 
   final Widget child;
   final String? title;
+  final bool showFrame;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: const _TreasureFramePainter(),
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (title != null) ...[
-              TreasureBanner(title: title!),
-              const SizedBox(height: 12),
-            ],
-            child,
-          ],
-        ),
+      painter: showFrame ? const _TreasureFramePainter() : null,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final inset = (constraints.maxWidth * .035).clamp(10.0, 18.0);
+          return Padding(
+            padding: EdgeInsets.all(inset),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (title != null) ...[
+                  TreasureBanner(title: title!),
+                  SizedBox(height: (inset * .75).clamp(8.0, 14.0)),
+                ],
+                child,
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -44,17 +55,49 @@ class TreasureBanner extends StatelessWidget {
           color: const Color(0xFF9A5737),
           border: Border.all(color: const Color(0xFF3A2028), width: 4),
         ),
-        child: Text(
-          title.toUpperCase(),
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Color(0xFFFFD55A),
-            fontSize: 13,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1,
-            shadows: [Shadow(color: Color(0xFF3A2028), offset: Offset(1, 2))],
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            title.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFFFFD55A),
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1,
+              shadows: [Shadow(color: Color(0xFF3A2028), offset: Offset(1, 2))],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class TreasureLabel extends StatelessWidget {
+  const TreasureLabel({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: const _PixelCutClipper(cut: 7),
+      child: Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          color: const Color(0xFF8D3D35),
+          border: Border.all(color: const Color(0xFF251A24), width: 4),
+          boxShadow: const [
+            BoxShadow(color: Color(0xFFB9AA83), offset: Offset(0, -2)),
+          ],
+        ),
+        child: child,
       ),
     );
   }
@@ -106,17 +149,25 @@ class TreasureButton extends StatelessWidget {
                   Icon(icon, color: const Color(0xFFFFE8B2), size: 18),
                   const SizedBox(width: 7),
                 ],
-                Text(
-                  label.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Color(0xFFFFE8B2),
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: .5,
-                    shadows: [
-                      Shadow(color: Color(0xFF251A24), offset: Offset(1, 2)),
-                    ],
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFFFFE8B2),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: .5,
+                        shadows: [
+                          Shadow(
+                            color: Color(0xFF251A24),
+                            offset: Offset(1, 2),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],

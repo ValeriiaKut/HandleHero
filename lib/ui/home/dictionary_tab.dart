@@ -5,232 +5,148 @@ import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
-class DictionaryTab extends StatefulWidget {
+class DictionaryTab extends StatelessWidget {
   const DictionaryTab({super.key});
-
-  @override
-  State<DictionaryTab> createState() => _DictionaryTabState();
-}
-
-class _DictionaryTabState extends State<DictionaryTab> {
-  int _cardIndex = 0;
-  bool _showAnswer = false;
 
   @override
   Widget build(BuildContext context) {
     final letters = ModuleCatalog.allLetters;
-    final letter = letters[_cardIndex];
-
     return Stack(
       fit: StackFit.expand,
       children: [
         Image.asset(MyImages.background, fit: BoxFit.cover),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(22, 18, 22, 16),
-          child: Column(
-            children: [
-              const Text(
-                'СЛОВНИК',
-                style: TextStyle(
-                  color: Color(0xFFFFE3A3),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2,
-                  shadows: [
-                    Shadow(color: Color(0xFF3D2117), offset: Offset(2, 3)),
+        SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 760),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Column(
+                  children: [
+                    const TreasureBanner(title: 'Dictionary'),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final columns = (constraints.maxWidth / 68)
+                              .floor()
+                              .clamp(4, 8);
+                          final spacing = constraints.maxWidth < 360
+                              ? 7.0
+                              : 10.0;
+                          return GridView.builder(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            itemCount: letters.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: columns,
+                                  crossAxisSpacing: spacing,
+                                  mainAxisSpacing: spacing,
+                                  childAspectRatio: 1,
+                                ),
+                            itemBuilder: (context, index) =>
+                                _DictionaryLetterTile(
+                                  option: letters[index],
+                                  onTap: () =>
+                                      _showLetter(context, letters[index]),
+                                ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-              Text(
-                'КАРТКА ${_cardIndex + 1} З ${letters.length}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-              const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: LinearProgressIndicator(
-                  minHeight: 8,
-                  value: (_cardIndex + 1) / letters.length,
-                  backgroundColor: const Color(0xFF6B3E26),
-                  color: const Color(0xFFFFD166),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _showAnswer = !_showAnswer),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 240),
-                    child: _showAnswer
-                        ? _answerCard(letter)
-                        : _questionCard(letter),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                _showAnswer
-                    ? 'ЗАПАМ’ЯТАЙ БУКВУ ТА ЖЕСТ'
-                    : 'НАТИСНИ НА КАРТКУ, ЩОБ ПОБАЧИТИ БУКВУ',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _pixelButton(
-                      label: 'НАЗАД',
-                      onPressed: _cardIndex == 0 ? null : _previous,
-                      secondary: true,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 2,
-                    child: _pixelButton(
-                      label: _showAnswer ? 'НАСТУПНА БУКВА' : 'ПОКАЗАТИ БУКВУ',
-                      onPressed: _showAnswer
-                          ? (_cardIndex == letters.length - 1 ? null : _next)
-                          : () => setState(() => _showAnswer = true),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _questionCard(LetterOption letter) {
-    return _cardShell(
-      key: ValueKey('question-${letter.letter}'),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'ЯКА ЦЕ БУКВА?',
-            style: TextStyle(
-              color: Color(0xFFFFD55A),
-              fontSize: 13,
-              fontWeight: FontWeight.w900,
-            ),
+  void _showLetter(BuildContext context, LetterOption option) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 420,
+            maxHeight: MediaQuery.sizeOf(dialogContext).height * .86,
           ),
-          const SizedBox(height: 16),
-          if (letter.image != null)
-            Flexible(child: LetterSign(option: letter, size: 210))
-          else
-            _missingSignCard(),
-          const SizedBox(height: 12),
-          const Text(
-            'НАТИСНИ, ЩОБ ВІДКРИТИ',
-            style: TextStyle(
-              color: Color(0xFFFFE8B2),
-              fontWeight: FontWeight.bold,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _answerCard(LetterOption letter) {
-    return _cardShell(
-      key: ValueKey('answer-${letter.letter}'),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'БУКВА ${letter.letter}',
-            style: const TextStyle(
-              color: Color(0xFFFFD55A),
-              fontSize: 28,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          const SizedBox(height: 14),
-          if (letter.image != null)
-            LetterSign(option: letter, size: 120)
-          else
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Ілюстрацію жесту для цієї букви ще не додано.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFFFFE8B2)),
+          child: SingleChildScrollView(
+            child: TreasureWindow(
+              title: 'Letter ${option.letter}',
+              showFrame: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Builder(
+                    builder: (context) {
+                      final size = (MediaQuery.sizeOf(context).height * .26)
+                          .clamp(100.0, 220.0);
+                      return LetterSign(option: option, size: size);
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  TreasureButton(
+                    label: 'CLOSE',
+                    tone: TreasureButtonTone.red,
+                    onPressed: () => Navigator.pop(dialogContext),
+                  ),
+                ],
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  Widget _missingSignCard() {
-    return Container(
-      width: 150,
-      height: 150,
-      decoration: BoxDecoration(
-        color: const Color(0xFF382630),
-        border: Border.all(color: const Color(0xFF817B6B), width: 4),
-      ),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.pan_tool_alt, size: 54, color: Color(0xFFFFD55A)),
-          SizedBox(height: 8),
-          Text(
-            'ЖЕСТ ДОДАЄТЬСЯ',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF382630),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
           ),
-        ],
+        ),
       ),
     );
   }
+}
 
-  Widget _cardShell({required Key key, required Widget child}) {
-    return TreasureWindow(key: key, child: child);
-  }
+class _DictionaryLetterTile extends StatelessWidget {
+  const _DictionaryLetterTile({required this.option, required this.onTap});
 
-  Widget _pixelButton({
-    required String label,
-    required VoidCallback? onPressed,
-    bool secondary = false,
-  }) {
-    return SizedBox(
-      height: 48,
-      child: TreasureButton(
-        label: label,
-        onPressed: onPressed,
-        tone: secondary ? TreasureButtonTone.red : TreasureButtonTone.green,
+  final LetterOption option;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0xFF382630),
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: const [
+              BoxShadow(color: Color(0xFF28202A), offset: Offset(3, 3)),
+            ],
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final signSize = (constraints.maxHeight * .5).clamp(22.0, 48.0);
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LetterSign(option: option, size: signSize),
+                  const SizedBox(height: 3),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      option.letter,
+                      style: const TextStyle(
+                        color: Color(0xFFFFD55A),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }
-
-  void _previous() => setState(() {
-    _cardIndex--;
-    _showAnswer = false;
-  });
-
-  void _next() => setState(() {
-    _cardIndex++;
-    _showAnswer = true;
-  });
 }

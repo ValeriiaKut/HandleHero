@@ -44,7 +44,7 @@ class Exercise1Bloc extends Bloc<Exercise1Event, Exercise1State> {
     emit(
       Exercise1State(
         correctAnswer: selected.letter,
-        currentImage: selected.image ?? '',
+        currentImage: selected.image,
         questionIndex: _questionIndex,
         totalQuestions: _questions.length,
       ),

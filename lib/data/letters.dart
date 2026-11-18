@@ -1,12 +1,8 @@
 import 'package:handle_hero/models/models.dart';
-import 'package:handle_hero/utils/my_images.dart';
+import 'package:handle_hero/data/module_catalog.dart';
 
 class Letters {
-  static const List<LetterOption> all = [
-    LetterOption('A', MyImages.A),
-    LetterOption('B', MyImages.B),
-    LetterOption('C', MyImages.C),
-  ];
+  static final List<LetterOption> all = ModuleCatalog.allLetters;
 
   static List<String> get names => all.map((item) => item.letter).toList();
 }
