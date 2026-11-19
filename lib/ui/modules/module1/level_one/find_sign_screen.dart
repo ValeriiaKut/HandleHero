@@ -7,17 +7,16 @@ import 'package:handle_hero/bloc/exercise2/exercise2_state.dart';
 import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_state.dart';
 import 'package:handle_hero/data/module_catalog.dart';
-import 'package:handle_hero/ui/modules/module1/Level1Screen/ex3screen.dart';
-import 'package:handle_hero/ui/modules/module1/Level1Screen/level1screen.dart';
+import 'package:handle_hero/ui/modules/module1/level_one/match_signs_screen.dart';
+import 'package:handle_hero/ui/modules/module1/level_one/level_overview_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/answer_result_dialog.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
 import 'package:handle_hero/widgets/out_of_lives_dialog.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
-import 'package:handle_hero/widgets/treasure_ui.dart';
 
-class Ex2screen extends StatelessWidget {
-  const Ex2screen({super.key, this.moduleIndex = 0});
+class FindSignScreen extends StatelessWidget {
+  const FindSignScreen({super.key, this.moduleIndex = 0});
 
   final int moduleIndex;
 
@@ -84,7 +83,7 @@ class _Ex2View extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => Ex3screen(moduleIndex: moduleIndex),
+                      builder: (_) => MatchSignsScreen(moduleIndex: moduleIndex),
                     ),
                   );
                 }
@@ -104,99 +103,90 @@ class _Ex2View extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => Level1screen(moduleIndex: moduleIndex),
+                    builder: (_) => LevelOverviewScreen(moduleIndex: moduleIndex),
                   ),
                 );
               },
             ),
             Positioned(
-              top: 100,
+              top: 132,
               left: 0,
               right: 0,
               child: BlocBuilder<Exercise2Bloc, Exercise2State>(
                 builder: (context, state) {
                   return Center(
-                    child: TreasureLabel(
-                      child: Text(
-                        ModuleCatalog.isHardLevel(moduleIndex)
-                            ? '${state.questionIndex + 1}/${state.totalQuestions} · FIND ${state.targetLetter}'
-                            : 'Find letter ${state.targetLetter}',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: ModuleCatalog.isHardLevel(moduleIndex)
-                              ? 22
-                              : 28,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFFFFE8B2),
-                        ),
-                      ),
+                    child: _OutlinedText(
+                      text: ModuleCatalog.isHardLevel(moduleIndex)
+                          ? '${state.questionIndex + 1}/${state.totalQuestions} · FIND ${state.targetLetter}'
+                          : 'Find letter ${state.targetLetter}',
+                      fontSize: ModuleCatalog.isHardLevel(moduleIndex) ? 22 : 28,
                     ),
                   );
                 },
               ),
             ),
             Positioned.fill(
-              top: 158,
-              bottom: 32,
+              top: 190,
+              bottom: 16,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final options = ModuleCatalog.lettersFor(moduleIndex);
-                    final tileWidth = math.min(
-                      220.0,
-                      (constraints.maxWidth - 14) / 2,
+                    final columns = constraints.maxWidth >= 660 ? 3 : 2;
+                    final rows = (options.length / columns).ceil();
+                    final spacing = 10.0;
+                    final tileWidth =
+                        (constraints.maxWidth - spacing * (columns - 1)) /
+                        columns;
+                    final tileHeight = math.max(
+                      140.0,
+                      (constraints.maxHeight - spacing * (rows - 1)) / rows,
                     );
-                    return SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 14,
-                        runSpacing: 14,
-                        children: [
-                          for (var index = 0; index < options.length; index++)
-                            SizedBox(
-                              width: tileWidth,
-                              height: tileWidth * 1.12,
-                              child: Material(
-                                color: const Color(0xFF382630),
-                                child: InkWell(
-                                  onTap: () =>
-                                      context.read<Exercise2Bloc>().add(
-                                        Exercise2AnswerSelected(
-                                          options[index].letter,
-                                        ),
-                                      ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      LetterSign(
-                                        option: options[index],
-                                        size: tileWidth * .88,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      TreasureLabel(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        child: Text(
-                                          'SIGN ${index + 1}',
-                                          style: const TextStyle(
-                                            color: Color(0xFFFFE8B2),
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 11,
-                                            letterSpacing: 0.8,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                    return GridView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: options.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columns,
+                        crossAxisSpacing: spacing,
+                        mainAxisSpacing: spacing,
+                        mainAxisExtent: tileHeight,
+                      ),
+                      itemBuilder: (context, index) {
+                        final isSoloLast =
+                            options.length.isOdd && index == options.length - 1;
+                        final tile = InkWell(
+                          onTap: () => context.read<Exercise2Bloc>().add(
+                            Exercise2AnswerSelected(options[index].letter),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              LetterSign(
+                                option: options[index],
+                                size: math.min(
+                                  tileWidth * 1.18,
+                                  tileHeight * .78,
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
+                              const SizedBox(height: 3),
+                              _OutlinedText(
+                                text: 'SIGN ${index + 1}',
+                                fontSize: 13,
+                              ),
+                            ],
+                          ),
+                        );
+                        return isSoloLast
+                            ? Transform.translate(
+                                offset: Offset(
+                                  (tileWidth + spacing) / 2,
+                                  -88,
+                                ),
+                                child: tile,
+                              )
+                            : tile;
+                      },
                     );
                   },
                 ),
@@ -205,6 +195,43 @@ class _Ex2View extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _OutlinedText extends StatelessWidget {
+  const _OutlinedText({required this.text, required this.fontSize});
+
+  final String text;
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w900,
+      height: 1.2,
+      letterSpacing: .5,
+    );
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: style.copyWith(
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 3
+              ..color = Colors.black,
+          ),
+        ),
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: style.copyWith(color: const Color(0xFFFFE8B2)),
+        ),
+      ],
     );
   }
 }

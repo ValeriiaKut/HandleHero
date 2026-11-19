@@ -6,9 +6,9 @@ import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_event.dart';
 import 'package:handle_hero/ui/home/camera_guess_screen.dart';
 import 'package:handle_hero/ui/home/dictionary_tab.dart';
-import 'package:handle_hero/ui/modules/module1/Level1Screen/level1screen.dart';
+import 'package:handle_hero/ui/modules/module1/level_one/level_overview_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
-import 'package:handle_hero/widgets/level_buttom.dart';
+import 'package:handle_hero/widgets/level_button.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class HomePage extends StatefulWidget {
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) =>
-                                        Level1screen(moduleIndex: levelIndex),
+                                        LevelOverviewScreen(moduleIndex: levelIndex),
                                   ),
                                 );
                               },
@@ -128,6 +128,27 @@ class _HomePageState extends State<HomePage> {
                             child: _StatueCameraButton(
                               onTap: () =>
                                   _openCamera(context, challengeIndex: 2),
+                            ),
+                          ),
+                          Positioned(
+                            left: 260,
+                            top: 225,
+                            child: IgnorePointer(
+                              child: Image.asset(MyImages.chest, width: 100),
+                            ),
+                          ),
+                          Positioned(
+                            left: 260,
+                            top: 960,
+                            child: IgnorePointer(
+                              child: Image.asset(MyImages.chest, width: 100),
+                            ),
+                          ),
+                          Positioned(
+                            left: 260,
+                            top: 1690,
+                            child: IgnorePointer(
+                              child: Image.asset(MyImages.chest, width: 100),
                             ),
                           ),
                         ],

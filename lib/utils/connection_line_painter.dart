@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handle_hero/models/models.dart';
 
-class LinePainter extends CustomPainter {
-  const LinePainter({
+class ConnectionLinePainter extends CustomPainter {
+  const ConnectionLinePainter({
     required this.completed,
     required this.letterOrder,
     required this.imageOrder,
@@ -16,10 +16,14 @@ class LinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF3CBF66)
+    final outline = Paint()
+      ..color = const Color(0xFF382630)
+      ..strokeWidth = 8
+      ..strokeCap = StrokeCap.square;
+    final line = Paint()
+      ..color = const Color(0xFFFFD166)
       ..strokeWidth = 4
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.square;
 
     final letterRows = <String, int>{
       for (var index = 0; index < letterOrder.length; index++)
@@ -35,16 +39,21 @@ class LinePainter extends CustomPainter {
       final imageRow = imageRows[letter];
       if (letterRow == null || imageRow == null) continue;
 
-      canvas.drawLine(
-        Offset(size.width * 0.25, rowHeight * (letterRow + 0.5)),
-        Offset(size.width * 0.75, rowHeight * (imageRow + 0.5)),
-        paint,
+      final start = Offset(
+        size.width * 0.25,
+        rowHeight * (letterRow + 0.5),
       );
+      final end = Offset(
+        size.width * 0.75,
+        rowHeight * (imageRow + 0.5),
+      );
+      canvas.drawLine(start, end, outline);
+      canvas.drawLine(start, end, line);
     }
   }
 
   @override
-  bool shouldRepaint(covariant LinePainter oldDelegate) =>
+  bool shouldRepaint(covariant ConnectionLinePainter oldDelegate) =>
       oldDelegate.completed != completed ||
       oldDelegate.letterOrder != letterOrder ||
       oldDelegate.imageOrder != imageOrder ||

@@ -4,22 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:handle_hero/data/module_catalog.dart';
 import 'package:handle_hero/models/models.dart';
 import 'package:handle_hero/ui/home/home_page.dart';
-import 'package:handle_hero/ui/modules/module1/Level1Screen/ex1screen.dart';
+import 'package:handle_hero/ui/modules/module1/level_one/mixed_challenge_screen.dart';
+import 'package:handle_hero/ui/modules/module1/level_one/name_sign_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
+import 'package:handle_hero/widgets/letter_glyph.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
-class Level1screen extends StatefulWidget {
-  const Level1screen({super.key, this.moduleIndex = 0});
+class LevelOverviewScreen extends StatefulWidget {
+  const LevelOverviewScreen({super.key, this.moduleIndex = 0});
 
   final int moduleIndex;
 
   @override
-  State<Level1screen> createState() => _Level1screenState();
+  State<LevelOverviewScreen> createState() => _LevelOverviewScreenState();
 }
 
-class _Level1screenState extends State<Level1screen> {
+class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
   int _cardIndex = 0;
   bool _showAnswer = false;
 
@@ -27,6 +29,7 @@ class _Level1screenState extends State<Level1screen> {
   Widget build(BuildContext context) {
     final letters = ModuleCatalog.lettersFor(widget.moduleIndex);
     final isHard = ModuleCatalog.isHardLevel(widget.moduleIndex);
+    final moduleNumber = widget.moduleIndex - widget.moduleIndex ~/ 4 + 1;
     return Scaffold(
       body: Stack(
         children: [
@@ -34,6 +37,7 @@ class _Level1screenState extends State<Level1screen> {
             child: Image.asset(MyImages.background, fit: BoxFit.cover),
           ),
           LevelHeader(
+            top: 50,
             onBack: () {
               Navigator.pushReplacement(
                 context,
@@ -41,51 +45,39 @@ class _Level1screenState extends State<Level1screen> {
               );
             },
           ),
-          if (isHard)
+          if (!isHard)
             Positioned(
-              top: 96,
+              top: 100,
               left: 0,
               right: 0,
-              child: Image.asset(
-                MyImages.hardLevel,
-                height: 82,
-                fit: BoxFit.contain,
-              ),
+              child: _outlinedModuleLabel(moduleNumber),
             ),
           Positioned(
-            top: isHard ? 184 : 100,
+            top: isHard ? 110 : 140,
             left: 0,
             right: 0,
-            child: Text(
+            child: _outlinedText(
               isHard
                   ? 'CHALLENGE ${widget.moduleIndex ~/ 4 + 1}'
                   : letters.map((item) => item.letter).join(' - '),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.lightBlueAccent,
-              ),
+              fontSize: 28,
+              color: const Color(0xFF4A9BCB),
             ),
           ),
           Positioned(
-            top: isHard ? 218 : 132,
+            top: isHard ? 178 : 188,
             left: 16,
             right: 16,
-            child: Text(
+            child: _outlinedText(
               isHard
-                  ? 'Recall ${letters.length} letters from modules ${((widget.moduleIndex ~/ 4) * 3) + 1}–${((widget.moduleIndex ~/ 4) * 3) + 3}'
+                  ? 'Letters: ${letters.map((item) => item.letter).join(' - ')}'
                   : 'Study each sign, then try the activities',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
+              fontSize: 14,
+              color: Colors.white,
             ),
           ),
           if (isHard)
-            _hardChallengeOverview(letters.length)
+            _hardChallengeOverview()
           else if (letters.isNotEmpty)
             _flashcards(context, letters),
           if (isHard)
@@ -104,21 +96,84 @@ class _Level1screenState extends State<Level1screen> {
     );
   }
 
-  Widget _hardChallengeOverview(int letterCount) {
+  Widget _outlinedText(
+    String text, {
+    required double fontSize,
+    required Color color,
+    TextAlign textAlign = TextAlign.center,
+  }) {
+    final style = TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w900,
+      height: 1.2,
+    );
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Text(
+          text,
+          textAlign: textAlign,
+          style: style.copyWith(
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 3
+              ..color = Colors.black,
+          ),
+        ),
+        Text(
+          text,
+          textAlign: textAlign,
+          style: style.copyWith(color: color),
+        ),
+      ],
+    );
+  }
+
+  Widget _outlinedModuleLabel(int moduleNumber) {
+    const label = 'MODULE';
+    const textStyle = TextStyle(
+      fontSize: 19,
+      fontWeight: FontWeight.w900,
+      letterSpacing: 1.4,
+    );
+    return SizedBox(
+      height: 26,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Text(
+            '$label $moduleNumber',
+            style: textStyle.copyWith(
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 3.5
+                ..color = Colors.black,
+            ),
+          ),
+          Text(
+            '$label $moduleNumber',
+            style: textStyle.copyWith(color: const Color(0xFFFFFFFF)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _hardChallengeOverview() {
     final steps = [
       (
         'SIGN RECOGNITION',
-        'Identify $letterCount handshapes in shuffled order.',
+        'Identify handshapes in shuffled order.',
       ),
       ('LETTER TO HANDSHAPE', 'Find the matching sign for each target letter.'),
-      ('MATCH ALL PAIRS', 'Connect all $letterCount signs and letters.'),
+      ('MATCH ALL PAIRS', 'Connect each matching pair.'),
       (
         'SENTENCE CHALLENGE',
-        'Fill the missing letter in $letterCount sentences.',
+        'Fill the missing letter in each sentence.',
       ),
     ];
     return Positioned.fill(
-      top: 256,
+      top: 230,
       bottom: 92,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(22, 4, 22, 8),
@@ -163,37 +218,30 @@ class _Level1screenState extends State<Level1screen> {
                 color: Color(0xFF9A5737),
                 shape: BoxShape.circle,
               ),
-              child: Text(
+              child: _outlinedText(
                 number,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                ),
+                fontSize: 18,
+                color: Colors.white,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  _outlinedText(
                     title,
-                    style: const TextStyle(
-                      color: Color(0xFFFFD55A),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 12,
-                    ),
+                    fontSize: 12,
+                    color: const Color(0xFFFFD55A),
+                    textAlign: TextAlign.left,
                   ),
                   const SizedBox(height: 3),
-                  Text(
+                  _outlinedText(
                     description,
-                    style: const TextStyle(
-                      color: Color(0xFFFFE8B2),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 11,
-                    ),
+                    fontSize: 11,
+                    color: const Color(0xFFE3D9A9),
+                    textAlign: TextAlign.left,
                   ),
                 ],
               ),
@@ -209,8 +257,8 @@ class _Level1screenState extends State<Level1screen> {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final compact = screenHeight < 700;
     return Positioned.fill(
-      top: screenHeight * .20,
-      bottom: compact ? 12 : 24,
+      top: screenHeight * .25,
+      bottom: compact ? 10 : 40,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
           (MediaQuery.sizeOf(context).width * .06).clamp(18.0, 32.0),
@@ -223,22 +271,14 @@ class _Level1screenState extends State<Level1screen> {
             constraints: const BoxConstraints(maxWidth: 560),
             child: Column(
               children: [
-                TreasureLabel(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  child: Text(
+
+                  _outlinedText(
                     'CARD ${_cardIndex + 1} OF ${letters.length}',
-                    style: const TextStyle(
-                      color: Color(0xFFFFE8B2),
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
+                    fontSize: 13,
+                    color: const Color(0xFFFFE8B2),
                   ),
-                ),
-                SizedBox(height: compact ? 5 : 9),
+
+                SizedBox(height: compact ? 5 : 15),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: LinearProgressIndicator(
@@ -266,19 +306,7 @@ class _Level1screenState extends State<Level1screen> {
                   ),
                 ),
                 SizedBox(height: compact ? 6 : 12),
-                TreasureLabel(
-                  child: Text(
-                    _showAnswer
-                        ? 'LETTER AND HANDSHAPE'
-                        : 'STUDY THE HANDSHAPE',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFFFFE8B2),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+
                 SizedBox(height: compact ? 6 : 12),
                 Row(
                   children: [
@@ -329,22 +357,15 @@ class _Level1screenState extends State<Level1screen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TreasureLabel(
-            child: Text(
-              'SIGN FOR LETTER ${letter.letter}',
-              style: const TextStyle(
-                color: Color(0xFFFFE8B2),
-                fontSize: 13,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.7,
-              ),
-            ),
-          ),
+
           const SizedBox(height: 16),
           LayoutBuilder(
             builder: (context, constraints) {
-              final size = math.min(275.0, constraints.maxHeight * .68);
-              return LetterSign(option: letter, size: size);
+              final size = math.min(340.0, constraints.maxHeight * .84);
+              return Transform.translate(
+                offset: const Offset(0, -45),
+                child: LetterSign(option: letter, size: size),
+              );
             },
           ),
           const SizedBox(height: 12),
@@ -359,21 +380,15 @@ class _Level1screenState extends State<Level1screen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TreasureLabel(
-            child: Text(
-              'LETTER ${letter.letter}',
-              style: const TextStyle(
-                color: Color(0xFFFFE8B2),
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ),
+
           const SizedBox(height: 12),
           LayoutBuilder(
             builder: (context, constraints) {
-              final size = math.min(210.0, constraints.maxHeight * .65);
-              return LetterSign(option: letter, size: size);
+              final size = math.min(340.0, constraints.maxHeight * .84);
+              return Transform.translate(
+                offset: const Offset(0, -45),
+                child: LetterGlyph(letter: letter.letter, size: size),
+              );
             },
           ),
         ],
@@ -394,6 +409,8 @@ class _Level1screenState extends State<Level1screen> {
       label: label,
       onPressed: onPressed,
       tone: secondary ? TreasureButtonTone.red : TreasureButtonTone.green,
+      labelColor: Colors.black,
+      labelShadow: false,
     );
   }
 
@@ -401,7 +418,9 @@ class _Level1screenState extends State<Level1screen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => Ex1screen(moduleIndex: widget.moduleIndex),
+        builder: (_) => ModuleCatalog.isHardLevel(widget.moduleIndex)
+            ? MixedChallengeScreen(moduleIndex: widget.moduleIndex)
+            : NameSignScreen(moduleIndex: widget.moduleIndex),
       ),
     );
   }

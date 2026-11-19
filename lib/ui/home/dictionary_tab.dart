@@ -3,6 +3,7 @@ import 'package:handle_hero/data/module_catalog.dart';
 import 'package:handle_hero/models/models.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/letter_sign.dart';
+import 'package:handle_hero/widgets/letter_glyph.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class DictionaryTab extends StatelessWidget {
@@ -92,6 +93,8 @@ class DictionaryTab extends StatelessWidget {
                   TreasureButton(
                     label: 'CLOSE',
                     tone: TreasureButtonTone.red,
+                    labelColor: Colors.black,
+                    labelShadow: false,
                     onPressed: () => Navigator.pop(dialogContext),
                   ),
                 ],
@@ -130,17 +133,7 @@ class _DictionaryLetterTile extends StatelessWidget {
                 children: [
                   LetterSign(option: option, size: signSize),
                   const SizedBox(height: 3),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      option.letter,
-                      style: const TextStyle(
-                        color: Color(0xFFFFD55A),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
+                  LetterGlyph(letter: option.letter, size: 24),
                 ],
               );
             },

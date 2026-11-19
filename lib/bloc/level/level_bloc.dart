@@ -15,7 +15,9 @@ class LevelBloc extends Bloc<LevelEvent, LevelState> {
 
   void _onLifeLost(LifeLost event, Emitter<LevelState> emit) {
     if (state.lives <= 0) return;
-    emit(state.copyWith(lives: state.lives - 1));
+    emit(
+      state.copyWith(lives: state.lives - 1, mistakes: state.mistakes + 1),
+    );
   }
 
   void _onLivesRestored(LivesRestored event, Emitter<LevelState> emit) {

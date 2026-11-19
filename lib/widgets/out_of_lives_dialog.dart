@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:math' as math;
 import 'package:handle_hero/bloc/home/home_bloc.dart';
 import 'package:handle_hero/bloc/home/home_event.dart';
 import 'package:handle_hero/bloc/home/home_state.dart';
 import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_event.dart';
-import 'package:handle_hero/ui/modules/module1/Level1Screen/level1screen.dart';
+import 'package:handle_hero/ui/modules/module1/level_one/level_overview_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
@@ -26,7 +27,10 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(MyImages.lose, width: 110),
+                  Transform.translate(
+                    offset: const Offset(5, 0),
+                    child: Image.asset(MyImages.lose, width: 180),
+                  ),
                   const SizedBox(height: 8),
                   const Text(
                     'NO LIVES LEFT',
@@ -49,13 +53,15 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                   TreasureButton(
                     label: 'RESTART',
                     tone: TreasureButtonTone.green,
+                    labelColor: Colors.black,
+                    labelShadow: false,
                     onPressed: () {
                       Navigator.pop(dialogContext);
                       context.read<LevelBloc>().add(LevelStarted());
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (_) =>
-                              Level1screen(moduleIndex: moduleIndex),
+                              LevelOverviewScreen(moduleIndex: moduleIndex),
                         ),
                         (route) => route.isFirst,
                       );
@@ -65,6 +71,8 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                   TreasureButton(
                     label: 'HOME',
                     tone: TreasureButtonTone.red,
+                    labelColor: Colors.black,
+                    labelShadow: false,
                     onPressed: () {
                       Navigator.pop(dialogContext);
                       context.read<LevelBloc>().add(LevelStarted());
@@ -77,6 +85,8 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                         ? 'CONTINUE · ${levelState.continueCost} COINS'
                         : 'NEED ${levelState.continueCost} COINS',
                     tone: TreasureButtonTone.wood,
+                    labelColor: Colors.black,
+                    labelShadow: false,
                     onPressed: canAfford
                         ? () {
                             context.read<HomeBloc>().add(
@@ -114,24 +124,39 @@ void handleWrongAnswer({
   showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (_) => Dialog(
+    builder: (dialogContext) => Dialog(
       backgroundColor: Colors.transparent,
-      child: TreasureWindow(
-        title: 'Try Again',
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(MyImages.lose, width: 110),
-            const SizedBox(height: 12),
-            TreasureButton(
-              label: 'TRY AGAIN',
-              tone: TreasureButtonTone.red,
-              onPressed: () {
-                Navigator.pop(context);
-                onTryAgain();
-              },
+      child: Transform.translate(
+        offset: const Offset(0, -12),
+        child: SizedBox(
+          width: math.min(MediaQuery.sizeOf(dialogContext).width * .9, 520.0),
+          child: TreasureWindow(
+            title: 'Try Again',
+            titleBackgroundColor: const Color(0xFF8D3D35),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Transform.translate(
+                    offset: const Offset(5, 0),
+                    child: Image.asset(MyImages.lose, width: 220),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TreasureButton(
+                  label: 'TRY AGAIN',
+                  tone: TreasureButtonTone.red,
+                  labelColor: Colors.black,
+                  labelShadow: false,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onTryAgain();
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     ),

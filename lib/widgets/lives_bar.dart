@@ -4,7 +4,9 @@ import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_state.dart';
 
 class LivesBar extends StatelessWidget {
-  const LivesBar({super.key});
+  const LivesBar({super.key, this.heartSize = 36});
+
+  final double heartSize;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class LivesBar extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: PixelHeart(
                   filled: i < state.lives,
-                  size: 36,
+                  size: heartSize,
                 ),
               ),
           ],
@@ -29,14 +31,21 @@ class LivesBar extends StatelessWidget {
 }
 
 class LevelHeader extends StatelessWidget {
-  const LevelHeader({super.key, required this.onBack});
+  const LevelHeader({
+    super.key,
+    required this.onBack,
+    this.top = 40,
+    this.heartSize = 36,
+  });
 
   final VoidCallback onBack;
+  final double top;
+  final double heartSize;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 40,
+      top: top,
       left: 16,
       right: 16,
       child: SizedBox(
@@ -55,7 +64,7 @@ class LevelHeader extends StatelessWidget {
                 ),
               ),
             ),
-            const LivesBar(),
+            LivesBar(heartSize: heartSize),
           ],
         ),
       ),

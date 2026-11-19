@@ -2,6 +2,8 @@ class MyImages {
   static const _assetsFolder = 'assets/images';
   static const grass = '$_assetsFolder/GrassBackground.png';
   static const background = '$_assetsFolder/Background.jpg';
+  static const cameraBackground = '$_assetsFolder/Background-k.png';
+  static const splashScreen = '$_assetsFolder/SplashScreen.png';
   static const statue = '$_assetsFolder/Statue.png';
   static const hardLevel = '$_assetsFolder/HardLevel.png';
   static const easyLevel = '$_assetsFolder/EasyLevel.png';
@@ -17,6 +19,7 @@ class MyImages {
   static const appBar = '$_assetsFolder/appBar.png';
   static const coin = '$_assetsFolder/Coin.png';
   static const lose = '$_assetsFolder/Lose.png';
+  static const chest = '$_assetsFolder/chest.png';
   static const success = '$_assetsFolder/Success.png';
   static const A = '$_assetsFolder/A-k.png';
   static const B = '$_assetsFolder/B-k.png';

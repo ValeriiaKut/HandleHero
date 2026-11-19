@@ -7,16 +7,20 @@ class TreasureWindow extends StatelessWidget {
     required this.child,
     this.title,
     this.showFrame = true,
+    this.backgroundColor = const Color(0xFF382630),
+    this.titleBackgroundColor = const Color(0xFF9A5737),
   });
 
   final Widget child;
   final String? title;
   final bool showFrame;
+  final Color backgroundColor;
+  final Color titleBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: showFrame ? const _TreasureFramePainter() : null,
+      painter: showFrame ? _TreasureFramePainter(backgroundColor) : null,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final inset = (constraints.maxWidth * .035).clamp(10.0, 18.0);
@@ -26,7 +30,10 @@ class TreasureWindow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (title != null) ...[
-                  TreasureBanner(title: title!),
+                  TreasureBanner(
+                    title: title!,
+                    backgroundColor: titleBackgroundColor,
+                  ),
                   SizedBox(height: (inset * .75).clamp(8.0, 14.0)),
                 ],
                 child,
@@ -40,9 +47,14 @@ class TreasureWindow extends StatelessWidget {
 }
 
 class TreasureBanner extends StatelessWidget {
-  const TreasureBanner({super.key, required this.title});
+  const TreasureBanner({
+    super.key,
+    required this.title,
+    this.backgroundColor = const Color(0xFF9A5737),
+  });
 
   final String title;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +64,7 @@ class TreasureBanner extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF9A5737),
+          color: backgroundColor,
           border: Border.all(color: const Color(0xFF3A2028), width: 4),
         ),
         child: FittedBox(
@@ -112,12 +124,20 @@ class TreasureButton extends StatelessWidget {
     required this.onPressed,
     this.tone = TreasureButtonTone.green,
     this.icon,
+    this.outlinedLabel = false,
+    this.labelFontSize = 10,
+    this.labelColor = const Color(0xFFFFE8B2),
+    this.labelShadow = true,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final TreasureButtonTone tone;
   final IconData? icon;
+  final bool outlinedLabel;
+  final double labelFontSize;
+  final Color labelColor;
+  final bool labelShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -152,22 +172,13 @@ class TreasureButton extends StatelessWidget {
                 Flexible(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: Text(
-                      label.toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Color(0xFFFFE8B2),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: .5,
-                        shadows: [
-                          Shadow(
-                            color: Color(0xFF251A24),
-                            offset: Offset(1, 2),
-                          ),
-                        ],
+                    child: _ButtonLabel(
+                      text: label.toUpperCase(),
+                      outlined: outlinedLabel,
+                      fontSize: labelFontSize,
+                      color: labelColor,
+                      showShadow: labelShadow,
                       ),
-                    ),
                   ),
                 ),
               ],
@@ -179,8 +190,59 @@ class TreasureButton extends StatelessWidget {
   }
 }
 
+class _ButtonLabel extends StatelessWidget {
+  const _ButtonLabel({
+    required this.text,
+    required this.outlined,
+    required this.fontSize,
+    required this.color,
+    required this.showShadow,
+  });
+
+  final String text;
+  final bool outlined;
+  final double fontSize;
+  final Color color;
+  final bool showShadow;
+
+  @override
+  Widget build(BuildContext context) {
+    final baseStyle = TextStyle(
+      color: color,
+      fontSize: fontSize,
+      fontWeight: FontWeight.w900,
+      letterSpacing: .5,
+      shadows: showShadow
+          ? const [Shadow(color: Color(0xFF251A24), offset: Offset(1, 2))]
+          : const [],
+    );
+    final fill = Text(text, textAlign: TextAlign.center, style: baseStyle);
+    if (!outlined) return fill;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: baseStyle.copyWith(
+            color: null,
+            shadows: const [],
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 3
+              ..color = Colors.black,
+          ),
+        ),
+        fill,
+      ],
+    );
+  }
+}
+
 class _TreasureFramePainter extends CustomPainter {
-  const _TreasureFramePainter();
+  const _TreasureFramePainter(this.backgroundColor);
+
+  final Color backgroundColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -209,7 +271,7 @@ class _TreasureFramePainter extends CustomPainter {
     );
     canvas.drawPath(
       polygon(Rect.fromLTWH(10, 10, size.width - 20, size.height - 20), 7),
-      Paint()..color = const Color(0xFF382630),
+      Paint()..color = backgroundColor,
     );
     final rivet = Paint()..color = const Color(0xFFC0B18A);
     for (final point in <Offset>[
@@ -223,7 +285,8 @@ class _TreasureFramePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TreasureFramePainter oldDelegate) => false;
+  bool shouldRepaint(covariant _TreasureFramePainter oldDelegate) =>
+      oldDelegate.backgroundColor != backgroundColor;
 }
 
 class _PixelCutClipper extends CustomClipper<Path> {

@@ -8,6 +8,8 @@ import 'package:hand_detection/hand_detection.dart' as hand;
 import 'package:handle_hero/bloc/camera/camera_bloc.dart';
 import 'package:handle_hero/bloc/camera/camera_event.dart';
 import 'package:handle_hero/bloc/camera/camera_state.dart';
+import 'package:handle_hero/bloc/home/home_bloc.dart';
+import 'package:handle_hero/bloc/home/home_event.dart';
 import 'package:handle_hero/data/camera_service.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
@@ -72,15 +74,23 @@ class _CameraGuessViewState extends State<_CameraGuessView>
   }
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<CameraBloc, CameraState>(builder: _buildCameraScreen);
+  Widget build(BuildContext context) => BlocConsumer<CameraBloc, CameraState>(
+    listenWhen: (previous, current) =>
+        !previous.isChallengeComplete && current.isChallengeComplete,
+    listener: (context, state) {
+      if (!widget.practiceMode && state.isChallengeComplete) {
+        context.read<HomeBloc>().add(CoinsEarned(50));
+      }
+    },
+    builder: _buildCameraScreen,
+  );
 
   Widget _buildCameraScreen(BuildContext context, CameraState state) {
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(MyImages.background, fit: BoxFit.cover),
+            child: Image.asset(MyImages.cameraBackground, fit: BoxFit.cover),
           ),
           SafeArea(
             child: Column(
@@ -301,8 +311,10 @@ class _ChallengeTargetPanel extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 440),
       child: TreasureWindow(
         title: 'CURRENT LETTER',
-        child: Row(
-          children: [
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          child: Row(
+            children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,7 +366,8 @@ class _ChallengeTargetPanel extends StatelessWidget {
                 ),
               ],
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -408,7 +421,7 @@ class _ChallengeEndOverlay extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       isSuccess
-                          ? 'You identified all 5 letters.'
+                          ? 'You identified all 5 letters. +50 COINS!'
                           : 'Try the 5-letter challenge again.',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
@@ -428,12 +441,16 @@ class _ChallengeEndOverlay extends StatelessWidget {
                           onPressed: onRetry,
                           tone: TreasureButtonTone.green,
                           icon: Icons.replay,
+                          labelColor: Colors.black,
+                          labelShadow: false,
                         ),
                         TreasureButton(
                           label: 'BACK TO MAP',
                           onPressed: onExit,
                           tone: TreasureButtonTone.red,
                           icon: Icons.map,
+                          labelColor: Colors.black,
+                          labelShadow: false,
                         ),
                       ],
                     ),

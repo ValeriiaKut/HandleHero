@@ -7,3 +7,9 @@ final class CoinsSpent extends HomeEvent {
 
   CoinsSpent(this.amount);
 }
+
+final class CoinsEarned extends HomeEvent {
+  final int amount;
+
+  CoinsEarned(this.amount);
+}
