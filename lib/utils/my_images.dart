@@ -1,7 +1,9 @@
 class MyImages {
   static const _assetsFolder = 'assets/images';
   static const grass = '$_assetsFolder/GrassBackground.png';
-  static const background = '$_assetsFolder/Background.png';
+  static const background = '$_assetsFolder/Background.jpg';
+  static const cameraBackground = '$_assetsFolder/Background-k.png';
+  static const splashScreen = '$_assetsFolder/SplashScreen.png';
   static const statue = '$_assetsFolder/Statue.png';
   static const hardLevel = '$_assetsFolder/HardLevel.png';
   static const easyLevel = '$_assetsFolder/EasyLevel.png';
@@ -16,9 +18,33 @@ class MyImages {
   static const num9 = '$_assetsFolder/9.png';
   static const appBar = '$_assetsFolder/appBar.png';
   static const coin = '$_assetsFolder/Coin.png';
-  static const A = '$_assetsFolder/A.png';
-  static const B = '$_assetsFolder/B.png';
-  static const C = '$_assetsFolder/C.png';
   static const lose = '$_assetsFolder/Lose.png';
+  static const chest = '$_assetsFolder/chest.png';
   static const success = '$_assetsFolder/Success.png';
+  static const A = '$_assetsFolder/A-k.png';
+  static const B = '$_assetsFolder/B-k.png';
+  static const C = '$_assetsFolder/C-k.png';
+  static const D = '$_assetsFolder/D-k.png';
+  static const E = '$_assetsFolder/E-k.png';
+  static const F = '$_assetsFolder/F-k.png';
+  static const G = '$_assetsFolder/G-k.png';
+  static const H = '$_assetsFolder/H-k.png';
+  static const I = '$_assetsFolder/I-k.png';
+  static const J = '$_assetsFolder/J-k.png';
+  static const K = '$_assetsFolder/K-k.png';
+  static const L = '$_assetsFolder/L-k.png';
+  static const M = '$_assetsFolder/M-k.png';
+  static const N = '$_assetsFolder/N-k.png';
+  static const O = '$_assetsFolder/O-k.png';
+  static const P = '$_assetsFolder/P-k.png';
+  static const Q = '$_assetsFolder/Q-k.png';
+  static const R = '$_assetsFolder/R-k.png';
+  static const S = '$_assetsFolder/S-k.png';
+  static const T = '$_assetsFolder/T-k.png';
+  static const U = '$_assetsFolder/U-k.png';
+  static const V = '$_assetsFolder/V-k.png';
+  static const W = '$_assetsFolder/W-k.png';
+  static const X = '$_assetsFolder/X-k.png';
+  static const Y = '$_assetsFolder/Y-k.png';
+
 }
