@@ -19,14 +19,14 @@ class LoseScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: TreasureWindow(
-                title: 'Try Again',
+                title: 'The Trial Continues',
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(MyImages.lose, width: 130),
                     const SizedBox(height: 16),
                     TreasureButton(
-                      label: 'TRY AGAIN',
+                      label: 'RETRY THE TRIAL',
                       tone: TreasureButtonTone.red,
                       onPressed: () {
                         Navigator.pushReplacement(

@@ -5,6 +5,7 @@ import 'package:handle_hero/bloc/home/home_state.dart';
 import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_event.dart';
 import 'package:handle_hero/ui/home/camera_guess_screen.dart';
+import 'package:handle_hero/ui/home/account_profile_page.dart';
 import 'package:handle_hero/ui/home/dictionary_tab.dart';
 import 'package:handle_hero/ui/modules/module1/level_one/level_overview_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
@@ -12,7 +13,10 @@ import 'package:handle_hero/widgets/level_button.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.userEmail, required this.onLogout});
+
+  final String userEmail;
+  final VoidCallback onLogout;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -100,6 +104,9 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
+                                    settings: RouteSettings(
+                                      name: '/level-overview/$levelIndex',
+                                    ),
                                     builder: (_) =>
                                         LevelOverviewScreen(moduleIndex: levelIndex),
                                   ),
@@ -161,10 +168,12 @@ class _HomePageState extends State<HomePage> {
             ? const CameraGuessScreen(challengeIndex: 0, practiceMode: true)
             : _selectedTab == 3
             ? const DictionaryTab()
+            : _selectedTab == 4
+            ? AccountProfilePage(email: widget.userEmail, onLogout: widget.onLogout)
             : _HomeTabPlaceholder(
                 title: switch (_selectedTab) {
                   0 => 'FRIENDS',
-                  3 => 'DICTIONARY',
+                  3 => 'SANCTUARY OF SIGNS',
                   _ => 'MY ACCOUNT',
                 },
                 icon: switch (_selectedTab) {
@@ -187,7 +196,7 @@ class _HomePageState extends State<HomePage> {
             onTap: (index) => setState(() => _selectedTab = index),
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.transparent,
-            selectedItemColor: const Color(0xFFFFE3A3),
+            selectedItemColor: const Color(0xFFE3D9AA),
             unselectedItemColor: Colors.white,
             selectedFontSize: 9,
             unselectedFontSize: 9,
@@ -355,7 +364,7 @@ class _HomeTabPlaceholder extends StatelessWidget {
                 title: title,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 18),
-                  child: Icon(icon, size: 64, color: const Color(0xFFFFD55A)),
+                  child: Icon(icon, size: 64, color: const Color(0xFFD1C27E)),
                 ),
               ),
             ),

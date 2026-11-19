@@ -17,11 +17,11 @@ class ConnectionLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final outline = Paint()
-      ..color = const Color(0xFF382630)
+      ..color = const Color(0xFF34382D)
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.square;
     final line = Paint()
-      ..color = const Color(0xFFFFD166)
+      ..color = const Color(0xFFD1C27E)
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.square;
 

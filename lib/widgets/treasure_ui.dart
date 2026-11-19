@@ -7,8 +7,8 @@ class TreasureWindow extends StatelessWidget {
     required this.child,
     this.title,
     this.showFrame = true,
-    this.backgroundColor = const Color(0xFF382630),
-    this.titleBackgroundColor = const Color(0xFF9A5737),
+    this.backgroundColor = const Color(0xFF34382D),
+    this.titleBackgroundColor = const Color(0xFF617347),
   });
 
   final Widget child;
@@ -50,7 +50,7 @@ class TreasureBanner extends StatelessWidget {
   const TreasureBanner({
     super.key,
     required this.title,
-    this.backgroundColor = const Color(0xFF9A5737),
+    this.backgroundColor = const Color(0xFF617347),
   });
 
   final String title;
@@ -65,7 +65,7 @@ class TreasureBanner extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: Border.all(color: const Color(0xFF3A2028), width: 4),
+          border: Border.all(color: const Color(0xFF25291F), width: 4),
         ),
         child: FittedBox(
           fit: BoxFit.scaleDown,
@@ -73,11 +73,11 @@ class TreasureBanner extends StatelessWidget {
             title.toUpperCase(),
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Color(0xFFFFD55A),
+              color: Color(0xFFD1C27E),
               fontSize: 13,
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
-              shadows: [Shadow(color: Color(0xFF3A2028), offset: Offset(1, 2))],
+              shadows: [Shadow(color: Color(0xFF25291F), offset: Offset(1, 2))],
             ),
           ),
         ),
@@ -103,10 +103,10 @@ class TreasureLabel extends StatelessWidget {
       child: Container(
         padding: padding,
         decoration: BoxDecoration(
-          color: const Color(0xFF8D3D35),
-          border: Border.all(color: const Color(0xFF251A24), width: 4),
+          color: const Color(0xFF8C5145),
+          border: Border.all(color: const Color(0xFF25291F), width: 4),
           boxShadow: const [
-            BoxShadow(color: Color(0xFFB9AA83), offset: Offset(0, -2)),
+            BoxShadow(color: Color(0xFFAFA985), offset: Offset(0, -2)),
           ],
         ),
         child: child,
@@ -126,7 +126,7 @@ class TreasureButton extends StatelessWidget {
     this.icon,
     this.outlinedLabel = false,
     this.labelFontSize = 10,
-    this.labelColor = const Color(0xFFFFE8B2),
+    this.labelColor = const Color(0xFFE3D9AA),
     this.labelShadow = true,
   });
 
@@ -142,23 +142,23 @@ class TreasureButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = switch (tone) {
-      TreasureButtonTone.green => const Color(0xFF547541),
-      TreasureButtonTone.red => const Color(0xFF8D3D35),
-      TreasureButtonTone.wood => const Color(0xFF9A5737),
+      TreasureButtonTone.green => const Color(0xFF637B48),
+      TreasureButtonTone.red => const Color(0xFF8C5145),
+      TreasureButtonTone.wood => const Color(0xFF617347),
     };
     return ClipPath(
       clipper: const _PixelCutClipper(cut: 7),
       child: Material(
-        color: onPressed == null ? const Color(0xFF50434A) : color,
+        color: onPressed == null ? const Color(0xFF46483B) : color,
         child: InkWell(
           onTap: onPressed,
           child: Container(
             constraints: const BoxConstraints(minHeight: 46),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFF251A24), width: 4),
+              border: Border.all(color: const Color(0xFF25291F), width: 4),
               boxShadow: const [
-                BoxShadow(color: Color(0xFFB9AA83), offset: Offset(0, -2)),
+                BoxShadow(color: Color(0xFFAFA985), offset: Offset(0, -2)),
               ],
             ),
             child: Row(
@@ -166,7 +166,7 @@ class TreasureButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (icon != null) ...[
-                  Icon(icon, color: const Color(0xFFFFE8B2), size: 18),
+                  Icon(icon, color: const Color(0xFFE3D9AA), size: 18),
                   const SizedBox(width: 7),
                 ],
                 Flexible(
@@ -213,7 +213,7 @@ class _ButtonLabel extends StatelessWidget {
       fontWeight: FontWeight.w900,
       letterSpacing: .5,
       shadows: showShadow
-          ? const [Shadow(color: Color(0xFF251A24), offset: Offset(1, 2))]
+          ? const [Shadow(color: Color(0xFF25291F), offset: Offset(1, 2))]
           : const [],
     );
     final fill = Text(text, textAlign: TextAlign.center, style: baseStyle);
@@ -263,17 +263,17 @@ class _TreasureFramePainter extends CustomPainter {
 
     canvas.drawPath(
       polygon(Offset.zero & size, 12),
-      Paint()..color = const Color(0xFF28202A),
+      Paint()..color = const Color(0xFF25291F),
     );
     canvas.drawPath(
       polygon(Rect.fromLTWH(5, 5, size.width - 10, size.height - 10), 9),
-      Paint()..color = const Color(0xFF817B6B),
+      Paint()..color = const Color(0xFF7C806C),
     );
     canvas.drawPath(
       polygon(Rect.fromLTWH(10, 10, size.width - 20, size.height - 20), 7),
       Paint()..color = backgroundColor,
     );
-    final rivet = Paint()..color = const Color(0xFFC0B18A);
+    final rivet = Paint()..color = const Color(0xFFD1C27E);
     for (final point in <Offset>[
       const Offset(5, 15),
       Offset(size.width - 8, 15),

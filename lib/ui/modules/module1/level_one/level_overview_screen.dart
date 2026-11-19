@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:handle_hero/data/module_catalog.dart';
 import 'package:handle_hero/models/models.dart';
-import 'package:handle_hero/ui/home/home_page.dart';
 import 'package:handle_hero/ui/modules/module1/level_one/mixed_challenge_screen.dart';
 import 'package:handle_hero/ui/modules/module1/level_one/name_sign_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
@@ -38,12 +37,7 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
           ),
           LevelHeader(
             top: 50,
-            onBack: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomePage()),
-              );
-            },
+            onBack: () => Navigator.pop(context),
           ),
           if (!isHard)
             Positioned(
@@ -58,10 +52,11 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
             right: 0,
             child: _outlinedText(
               isHard
-                  ? 'CHALLENGE ${widget.moduleIndex ~/ 4 + 1}'
+                  ? "GODS' TRIAL ${widget.moduleIndex ~/ 4 + 1}"
                   : letters.map((item) => item.letter).join(' - '),
               fontSize: 28,
-              color: const Color(0xFF4A9BCB),
+              color: const Color(0xFF65C8E8),
+              outlineColor: const Color(0xFF286D91),
             ),
           ),
           Positioned(
@@ -71,7 +66,7 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
             child: _outlinedText(
               isHard
                   ? 'Letters: ${letters.map((item) => item.letter).join(' - ')}'
-                  : 'Study each sign, then try the activities',
+                  : 'Learn each sigil, then begin your rites',
               fontSize: 14,
               color: Colors.white,
             ),
@@ -86,7 +81,7 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: _pixelButton(
-                  label: 'START CHALLENGE',
+                  label: 'BEGIN THE TRIAL',
                   onPressed: () => _startPractice(context),
                 ),
               ),
@@ -100,6 +95,7 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
     String text, {
     required double fontSize,
     required Color color,
+    Color outlineColor = Colors.black,
     TextAlign textAlign = TextAlign.center,
   }) {
     final style = TextStyle(
@@ -117,7 +113,7 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
             foreground: Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 3
-              ..color = Colors.black,
+              ..color = outlineColor,
           ),
         ),
         Text(
@@ -130,7 +126,7 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
   }
 
   Widget _outlinedModuleLabel(int moduleNumber) {
-    const label = 'MODULE';
+    const label = 'SHRINE';
     const textStyle = TextStyle(
       fontSize: 19,
       fontWeight: FontWeight.w900,
@@ -162,14 +158,14 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
   Widget _hardChallengeOverview() {
     final steps = [
       (
-        'SIGN RECOGNITION',
+        'DECODE THE SIGNS',
         'Identify handshapes in shuffled order.',
       ),
-      ('LETTER TO HANDSHAPE', 'Find the matching sign for each target letter.'),
-      ('MATCH ALL PAIRS', 'Connect each matching pair.'),
+      ('FIND THE SIGIL', 'Find the handshape linked to each letter.'),
+      ('BIND THE PAIRS', 'Connect each matching pair.'),
       (
-        'SENTENCE CHALLENGE',
-        'Fill the missing letter in each sentence.',
+        'RESTORE THE INSCRIPTION',
+        'Fill the missing letter to restore each inscription.',
       ),
     ];
     return Positioned.fill(
@@ -205,8 +201,8 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFF382630),
-          border: Border.all(color: const Color(0xFF817B6B), width: 4),
+          color: const Color(0xFF34382D),
+          border: Border.all(color: const Color(0xFF7C806C), width: 4),
         ),
         child: Row(
           children: [
@@ -215,7 +211,7 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
               height: 36,
               alignment: Alignment.center,
               decoration: const BoxDecoration(
-                color: Color(0xFF9A5737),
+                color: Color(0xFF617347),
                 shape: BoxShape.circle,
               ),
               child: _outlinedText(
@@ -233,14 +229,14 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                   _outlinedText(
                     title,
                     fontSize: 12,
-                    color: const Color(0xFFFFD55A),
+                    color: const Color(0xFFD1C27E),
                     textAlign: TextAlign.left,
                   ),
                   const SizedBox(height: 3),
                   _outlinedText(
                     description,
                     fontSize: 11,
-                    color: const Color(0xFFE3D9A9),
+                    color: const Color(0xFFE3D9AA),
                     textAlign: TextAlign.left,
                   ),
                 ],
@@ -273,9 +269,9 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
               children: [
 
                   _outlinedText(
-                    'CARD ${_cardIndex + 1} OF ${letters.length}',
+                    'SIGN ${_cardIndex + 1} OF ${letters.length}',
                     fontSize: 13,
-                    color: const Color(0xFFFFE8B2),
+                    color: const Color(0xFFE3D9AA),
                   ),
 
                 SizedBox(height: compact ? 5 : 15),
@@ -284,8 +280,8 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                   child: LinearProgressIndicator(
                     minHeight: 8,
                     value: (_cardIndex + 1) / letters.length,
-                    backgroundColor: const Color(0xFF6B3E26),
-                    color: const Color(0xFFFFD166),
+                    backgroundColor: const Color(0xFF414536),
+                    color: const Color(0xFFD1C27E),
                   ),
                 ),
                 SizedBox(height: compact ? 8 : 14),
@@ -327,8 +323,8 @@ class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                       flex: 2,
                       child: _pixelButton(
                         label: _cardIndex == letters.length - 1
-                            ? 'START PRACTICE'
-                            : 'NEXT LETTER',
+                            ? 'STRENGTHEN YOUR SPIRIT'
+                            : 'NEXT SIGN',
                         onPressed: () {
                           if (_cardIndex < letters.length - 1) {
                             setState(() {

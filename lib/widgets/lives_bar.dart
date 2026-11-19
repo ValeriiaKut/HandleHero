@@ -53,6 +53,12 @@ class LevelHeader extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
+            Center(
+              child: Transform.translate(
+                offset: const Offset(-8, 0),
+                child: LivesBar(heartSize: heartSize),
+              ),
+            ),
             Align(
               alignment: Alignment.centerLeft,
               child: InkWell(
@@ -64,7 +70,6 @@ class LevelHeader extends StatelessWidget {
                 ),
               ),
             ),
-            LivesBar(heartSize: heartSize),
           ],
         ),
       ),
@@ -100,7 +105,7 @@ class _PixelBackArrowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white
+      ..color = const Color(0xFFE3D9AA)
       ..isAntiAlias = false;
     final cellW = size.width / 9;
     final cellH = size.height / 7;
@@ -164,10 +169,10 @@ class _PixelHeartPainter extends CustomPainter {
 
   final bool filled;
 
-  static const _outline = Color(0xFF4A0E0E);
-  static const _fill = Color(0xFFE12626);
-  static const _highlight = Color(0xFFFF8B8B);
-  static const _empty = Color(0xFF7A3A3A);
+  static const _outline = Color(0xFF532D2C);
+  static const _fill = Color(0xFFEB514F);
+  static const _highlight = Color(0xFFFFA49A);
+  static const _empty = Color(0xFFAA514D);
 
   @override
   void paint(Canvas canvas, Size size) {

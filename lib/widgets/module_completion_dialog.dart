@@ -25,16 +25,16 @@ Future<void> showModuleCompletionDialog({
         ),
         child: SingleChildScrollView(
           child: TreasureWindow(
-            title: 'TREASURE CHEST',
-            titleBackgroundColor: const Color(0xFF547541),
+            title: 'DIVINE REWARD',
+            titleBackgroundColor: const Color(0xFF637B48),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'MODULE COMPLETE',
+                  'SHRINE CLEARED',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFFFFE8B2),
+                    color: Color(0xFFE3D9AA),
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
                   ),
@@ -46,7 +46,7 @@ Future<void> showModuleCompletionDialog({
                   'MISTAKES: $mistakes',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: Color(0xFFFFE8B2),
+                    color: Color(0xFFE3D9AA),
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
                   ),
@@ -56,7 +56,7 @@ Future<void> showModuleCompletionDialog({
                   '+$reward COINS',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: Color(0xFFFFD166),
+                    color: Color(0xFFD1C27E),
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
                   ),

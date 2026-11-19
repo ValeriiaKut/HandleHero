@@ -93,7 +93,7 @@ class _Ex3View extends StatelessWidget {
                   builder: (context, state) => Column(
                     children: [
                       const _OutlinedText(
-                        text: 'MATCH THE PAIRS',
+                        text: 'BIND THE PAIRS',
                         fontSize: 20,
                       ),
                       const SizedBox(height: 7),
@@ -269,7 +269,7 @@ class _Ex3View extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
         side: showBorder
-            ? const BorderSide(color: Color(0xFF817B6B), width: 4)
+            ? const BorderSide(color: Color(0xFF7C806C), width: 4)
             : BorderSide.none,
       ),
       clipBehavior: showBorder ? Clip.antiAlias : Clip.none,
@@ -289,7 +289,7 @@ class _OutlinedText extends StatelessWidget {
   const _OutlinedText({
     required this.text,
     required this.fontSize,
-    this.color = const Color(0xFFFFE8B2),
+    this.color = const Color(0xFFE3D9AA),
   });
 
   final String text;

@@ -107,7 +107,7 @@ class _Ex4View extends StatelessWidget {
               child: Column(
                 children: [
                   _OutlinedText(
-                    text: 'COMPLETE THE SENTENCE',
+                    text: 'RESTORE THE INSCRIPTION',
                     fontSize: 18,
                   ),
                   SizedBox(height: 10),
@@ -128,7 +128,7 @@ class _Ex4View extends StatelessWidget {
                   if (question == null) {
                     return const Center(
                       child: CircularProgressIndicator(
-                        color: const Color(0xFFFFE9A8),
+                        color: const Color(0xFFE3D9AA),
                       ),
                     );
                   }
@@ -150,8 +150,8 @@ class _Ex4View extends StatelessWidget {
                             value:
                                 (state.questionIndex + 1) /
                                 state.questions.length,
-                            backgroundColor: const Color(0xFF6B3E26),
-                            color: const Color(0xFFFFD166),
+                            backgroundColor: const Color(0xFF414536),
+                            color: const Color(0xFFD1C27E),
                           ),
                         ),
                         Expanded(
@@ -168,9 +168,9 @@ class _Ex4View extends StatelessWidget {
                                     vertical: 28,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF382630),
+                                    color: const Color(0xFF34382D),
                                     border: Border.all(
-                                      color: const Color(0xFF817B6B),
+                                      color: const Color(0xFF7C806C),
                                       width: 4,
                                     ),
                                   ),
@@ -254,13 +254,13 @@ class _Ex4View extends StatelessWidget {
       height: 52,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: const Color(0xFF9A5737),
-        border: Border.all(color: const Color(0xFF28202A), width: 4),
+        color: const Color(0xFF617347),
+        border: Border.all(color: const Color(0xFF25291F), width: 4),
       ),
       child: Text(
         revealAnswer ? question.letter.toLowerCase() : '?',
         style: const TextStyle(
-          color: const Color(0xFFFFE8B2),
+          color: const Color(0xFFE3D9AA),
           fontSize: 28,
           fontWeight: FontWeight.w900,
         ),
@@ -269,7 +269,7 @@ class _Ex4View extends StatelessWidget {
     return Text.rich(
       TextSpan(
         style: const TextStyle(
-          color: const Color(0xFFFFE8B2),
+          color: const Color(0xFFE3D9AA),
           fontSize: 24,
           fontWeight: FontWeight.w800,
           height: 1.45,
@@ -322,7 +322,7 @@ class _OutlinedText extends StatelessWidget {
   const _OutlinedText({
     required this.text,
     required this.fontSize,
-    this.color = const Color(0xFFFFE8B2),
+    this.color = const Color(0xFFE3D9AA),
   });
 
   final String text;

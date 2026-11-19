@@ -25,7 +25,7 @@ class DictionaryTab extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Column(
                   children: [
-                    const TreasureBanner(title: 'Dictionary'),
+                    const TreasureBanner(title: 'Sanctuary of Signs'),
                     const SizedBox(height: 10),
                     Expanded(
                       child: LayoutBuilder(
@@ -89,8 +89,8 @@ class DictionaryTab extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   const TreasureBanner(
-                    title: 'Finger positions',
-                    backgroundColor: Color(0xFF547541),
+                    title: 'Handshape Lore',
+                    backgroundColor: Color(0xFF637B48),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -98,7 +98,7 @@ class DictionaryTab extends StatelessWidget {
                         'Use the handshape shown above.',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
-                      color: Color(0xFFFFE8B2),
+                      color: Color(0xFFE3D9AA),
                       fontSize: 11,
                       height: 1.7,
                     ),

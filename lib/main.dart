@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handle_hero/bloc/home/home_bloc.dart';
 import 'package:handle_hero/bloc/home/home_event.dart';
 import 'package:handle_hero/bloc/level/level_bloc.dart';
-import 'package:handle_hero/ui/home/home_page.dart';
+import 'package:handle_hero/ui/auth/auth_gate.dart';
 import 'package:handle_hero/utils/my_images.dart';
 
 void main() {
@@ -70,7 +70,7 @@ class _StartupScreenState extends State<_StartupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_showSplash) return const HomePage();
+    if (!_showSplash) return const AuthGate();
     return const Scaffold(
       body: SizedBox.expand(
         child: Image(image: AssetImage(MyImages.splashScreen), fit: BoxFit.cover),

@@ -8,7 +8,6 @@ import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_state.dart';
 import 'package:handle_hero/data/module_catalog.dart';
 import 'package:handle_hero/ui/modules/module1/level_one/match_signs_screen.dart';
-import 'package:handle_hero/ui/modules/module1/level_one/level_overview_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/answer_result_dialog.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
@@ -100,11 +99,10 @@ class _Ex2View extends StatelessWidget {
             ),
             LevelHeader(
               onBack: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => LevelOverviewScreen(moduleIndex: moduleIndex),
-                  ),
+                Navigator.of(context).popUntil(
+                  (route) =>
+                      route.settings.name == '/level-overview/$moduleIndex' ||
+                      route.isFirst,
                 );
               },
             ),
@@ -117,8 +115,8 @@ class _Ex2View extends StatelessWidget {
                   return Center(
                     child: _OutlinedText(
                       text: ModuleCatalog.isHardLevel(moduleIndex)
-                          ? '${state.questionIndex + 1}/${state.totalQuestions} · FIND ${state.targetLetter}'
-                          : 'Find letter ${state.targetLetter}',
+                          ? 'RITE ${state.questionIndex + 1}/${state.totalQuestions} · SEEK ${state.targetLetter}'
+                          : 'Seek letter ${state.targetLetter}',
                       fontSize: ModuleCatalog.isHardLevel(moduleIndex) ? 22 : 28,
                     ),
                   );
@@ -229,7 +227,7 @@ class _OutlinedText extends StatelessWidget {
         Text(
           text,
           textAlign: TextAlign.center,
-          style: style.copyWith(color: const Color(0xFFFFE8B2)),
+          style: style.copyWith(color: const Color(0xFFE3D9AA)),
         ),
       ],
     );

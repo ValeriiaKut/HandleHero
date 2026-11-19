@@ -90,7 +90,7 @@ class _CameraGuessViewState extends State<_CameraGuessView>
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(MyImages.cameraBackground, fit: BoxFit.cover),
+            child: Image.asset(MyImages.backStone, fit: BoxFit.cover),
           ),
           SafeArea(
             child: Column(
@@ -182,17 +182,34 @@ class _CameraGuessViewState extends State<_CameraGuessView>
                 ),
               ),
             Expanded(
-              child: Text(
-                widget.practiceMode
-                    ? ''
-                    : 'CHALLENGE ${widget.challengeIndex + 1} · $letterRange',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.lightBlueAccent,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              child: widget.practiceMode
+                  ? const SizedBox.shrink()
+                  : Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Text(
+                          "GODS' TRIAL ${widget.challengeIndex + 1} · $letterRange",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 3
+                              ..color = Color(0xFF286D91),
+                          ),
+                        ),
+                        Text(
+                          "GODS' TRIAL ${widget.challengeIndex + 1} · $letterRange",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color(0xFF65C8E8),
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
             const SizedBox(width: 52),
           ],
@@ -212,7 +229,7 @@ class _CameraGuessViewState extends State<_CameraGuessView>
         !controller.value.isInitialized) {
       return Center(
         child: state.error == null
-            ? const CircularProgressIndicator(color: Color(0xFF6B3E26))
+            ? const CircularProgressIndicator(color: Color(0xFF414536))
             : Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -221,14 +238,14 @@ class _CameraGuessViewState extends State<_CameraGuessView>
                     Text(
                       state.error!,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Color(0xFF6B3E26)),
+                      style: const TextStyle(color: Color(0xFF414536)),
                     ),
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed: () => context.read<CameraBloc>().add(
                         CameraRetryRequested(),
                       ),
-                      child: const Text('Try again'),
+                      child: const Text('Retry the rite'),
                     ),
                   ],
                 ),
@@ -273,7 +290,7 @@ class _FreePracticePanel extends StatelessWidget {
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 440),
       child: TreasureWindow(
-        title: 'PRACTICE',
+        title: 'SPIRIT STRENGTHENING',
         child: const Row(
           children: [
             Expanded(
@@ -281,7 +298,7 @@ class _FreePracticePanel extends StatelessWidget {
                 'SHOW ANY LETTER SIGN',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xFFFFE8B2),
+                  color: Color(0xFFE3D9AA),
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
                 ),
@@ -323,7 +340,7 @@ class _ChallengeTargetPanel extends StatelessWidget {
                   const Text(
                     'SHOW THE SIGN FOR',
                     style: TextStyle(
-                      color: Color(0xFFD5C7AC),
+                      color: Color(0xFFE3D9AA),
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
@@ -331,7 +348,7 @@ class _ChallengeTargetPanel extends StatelessWidget {
                   Text(
                     state.targetLetter ?? '✓',
                     style: const TextStyle(
-                      color: Color(0xFFFFD55A),
+                      color: Color(0xFFD1C27E),
                       fontSize: 34,
                       fontWeight: FontWeight.w900,
                     ),
@@ -345,7 +362,7 @@ class _ChallengeTargetPanel extends StatelessWidget {
                 Text(
                   'LETTER $displayedQuestion / $total',
                   style: const TextStyle(
-                    color: Color(0xFFFFE8B2),
+                    color: Color(0xFFE3D9AA),
                     fontSize: 9,
                     fontWeight: FontWeight.bold,
                   ),
@@ -359,8 +376,8 @@ class _ChallengeTargetPanel extends StatelessWidget {
                         height: 8,
                         margin: const EdgeInsets.only(left: 3),
                         color: index < state.questionIndex
-                            ? const Color(0xFFFFD55A)
-                            : const Color(0xFF75606D),
+                            ? const Color(0xFFD1C27E)
+                            : const Color(0xFF7C806C),
                       ),
                   ],
                 ),
@@ -391,14 +408,14 @@ class _ChallengeEndOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: ColoredBox(
-        color: const Color(0xAA1F160F),
+        color: const Color(0xAA25291F),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 380),
               child: TreasureWindow(
-                title: isSuccess ? 'Challenge Complete' : 'Try Again',
+                title: isSuccess ? 'Trial Complete' : 'Trial Failed',
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -409,11 +426,11 @@ class _ChallengeEndOverlay extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       isSuccess
-                          ? 'ALL FIVE LETTERS FOUND!'
-                          : 'TRY THE CHALLENGE AGAIN',
+                          ? 'ALL FIVE SIGNS MASTERED!'
+                          : 'THE GODS DEMAND ANOTHER ATTEMPT',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        color: Color(0xFFFFE8B2),
+                        color: Color(0xFFE3D9AA),
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
                       ),
@@ -421,11 +438,11 @@ class _ChallengeEndOverlay extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       isSuccess
-                          ? 'You identified all 5 letters. +50 COINS!'
-                          : 'Try the 5-letter challenge again.',
+                          ? 'You mastered all 5 signs. +50 COINS!'
+                          : 'The trial awaits your return.',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        color: Color(0xFFD5C7AC),
+                        color: Color(0xFFE3D9AA),
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
@@ -437,7 +454,7 @@ class _ChallengeEndOverlay extends StatelessWidget {
                       runSpacing: 10,
                       children: [
                         TreasureButton(
-                          label: 'PLAY AGAIN',
+                          label: 'RETRY THE TRIAL',
                           onPressed: onRetry,
                           tone: TreasureButtonTone.green,
                           icon: Icons.replay,
@@ -498,7 +515,7 @@ class _PixelLetterResult extends StatelessWidget {
                     status,
                     maxLines: 2,
                     style: const TextStyle(
-                      color: Color(0xFFFFE8B2),
+                      color: Color(0xFFE3D9AA),
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                     ),
@@ -511,7 +528,7 @@ class _PixelLetterResult extends StatelessWidget {
                       maxLines: 6,
                       overflow: TextOverflow.clip,
                       style: const TextStyle(
-                        color: Color(0xFFE88975),
+                        color: Color(0xFFC78B6D),
                         fontFamily: null,
                         fontSize: 10,
                         fontWeight: FontWeight.normal,
@@ -526,8 +543,8 @@ class _PixelLetterResult extends StatelessWidget {
               state.predictedLetter ?? (state.isClassifierReady ? '—' : '!'),
               style: TextStyle(
                 color: state.isClassifierReady
-                    ? const Color(0xFFFFD55A)
-                    : const Color(0xFFE88975),
+                    ? const Color(0xFFD1C27E)
+                    : const Color(0xFFC78B6D),
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
@@ -571,20 +588,20 @@ class _PixelHandLandmarksPainter extends CustomPainter {
     }
 
     final linePaint = Paint()
-      ..color = const Color(0xFFFFE3A3)
+      ..color = const Color(0xFFE3D9AA)
       ..strokeWidth = 5
       ..strokeCap = StrokeCap.square
       ..isAntiAlias = false;
     final shadowPaint = Paint()
-      ..color = const Color(0xFF3D2117)
+      ..color = const Color(0xFF25291F)
       ..strokeWidth = 9
       ..strokeCap = StrokeCap.square
       ..isAntiAlias = false;
     final pointPaint = Paint()
-      ..color = const Color(0xFF57D9FF)
+      ..color = const Color(0xFFD1C27E)
       ..isAntiAlias = false;
     final pointBorderPaint = Paint()
-      ..color = const Color(0xFF3D2117)
+      ..color = const Color(0xFF25291F)
       ..isAntiAlias = false;
 
     for (final detectedHand in hands) {
@@ -621,14 +638,14 @@ class _PixelCameraFrame extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFF817B6B),
-        boxShadow: [BoxShadow(color: Color(0xFF28202A), offset: Offset(0, 8))],
+        color: Color(0xFF7C806C),
+        boxShadow: [BoxShadow(color: Color(0xFF25291F), offset: Offset(0, 8))],
       ),
       padding: const EdgeInsets.all(8),
       child: CustomPaint(
         foregroundPainter: _SciFiCameraFramePainter(),
         child: Container(
-          color: const Color(0xFF382630),
+          color: const Color(0xFF34382D),
           padding: const EdgeInsets.all(5),
           child: ClipRect(child: child),
         ),
@@ -640,8 +657,8 @@ class _PixelCameraFrame extends StatelessWidget {
 class _SciFiCameraFramePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    const dark = Color(0xFF3D2117);
-    const gold = Color(0xFFFFE3A3);
+    const dark = Color(0xFF25291F);
+    const gold = Color(0xFFE3D9AA);
     final darkLine = Paint()
       ..color = dark
       ..strokeWidth = 4
@@ -713,15 +730,15 @@ class _PixelCameraButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFF6B3E26),
+      color: const Color(0xFF414536),
       child: InkWell(
         onTap: onPressed,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFFFE3A3), width: 3),
+            border: Border.all(color: const Color(0xFFE3D9AA), width: 3),
             boxShadow: const [
-              BoxShadow(color: Color(0xFF3D2117), offset: Offset(0, 5)),
+              BoxShadow(color: Color(0xFF25291F), offset: Offset(0, 5)),
             ],
           ),
           child: Row(

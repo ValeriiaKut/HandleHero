@@ -7,7 +7,6 @@ import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/bloc/level/level_state.dart';
 import 'package:handle_hero/data/module_catalog.dart';
 import 'package:handle_hero/ui/modules/module1/level_one/find_sign_screen.dart';
-import 'package:handle_hero/ui/modules/module1/level_one/level_overview_screen.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/answer_result_dialog.dart';
 import 'package:handle_hero/widgets/lives_bar.dart';
@@ -103,14 +102,7 @@ class _Ex1View extends StatelessWidget {
             LevelHeader(
               top: 58,
               heartSize: 40,
-              onBack: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => LevelOverviewScreen(moduleIndex: moduleIndex),
-                  ),
-                );
-              },
+              onBack: () => Navigator.pop(context),
             ),
             Positioned(
               top: 148,
@@ -120,8 +112,8 @@ class _Ex1View extends StatelessWidget {
                 builder: (context, state) => Center(
                   child: _OutlinedPrompt(
                     text: ModuleCatalog.isHardLevel(moduleIndex)
-                        ? 'SIGN ${state.questionIndex + 1}/${state.totalQuestions} · NAME THE LETTER'
-                        : 'What letter is this?',
+                        ? 'RITE ${state.questionIndex + 1}/${state.totalQuestions} · REVEAL THE LETTER'
+                        : 'Which letter is revealed?',
                     fontSize: ModuleCatalog.isHardLevel(moduleIndex) ? 16 : 18,
                   ),
                 ),
@@ -249,7 +241,7 @@ class _OutlinedPrompt extends StatelessWidget {
         Text(
           text,
           textAlign: TextAlign.center,
-          style: style.copyWith(color: const Color(0xFFFFE8B2)),
+          style: style.copyWith(color: const Color(0xFFE3D9AA)),
         ),
       ],
     );

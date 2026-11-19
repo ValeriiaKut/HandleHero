@@ -2,6 +2,7 @@ class MyImages {
   static const _assetsFolder = 'assets/images';
   static const grass = '$_assetsFolder/GrassBackground.png';
   static const background = '$_assetsFolder/Background.jpg';
+  static const backStone = '$_assetsFolder/Back-stone.jpeg';
   static const cameraBackground = '$_assetsFolder/Background-k.png';
   static const splashScreen = '$_assetsFolder/SplashScreen.png';
   static const statue = '$_assetsFolder/Statue.png';

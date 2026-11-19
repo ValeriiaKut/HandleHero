@@ -27,10 +27,10 @@ Future<void> showAnswerResultDialog({
                 520.0,
               ),
               child: TreasureWindow(
-                title: isCorrect ? 'Correct!' : 'Wrong!',
+                title: isCorrect ? 'SIGN REVEALED!' : 'SIGN STILL HIDDEN',
                 titleBackgroundColor: isCorrect
-                    ? const Color(0xFF547541)
-                    : const Color(0xFF8D3D35),
+                    ? const Color(0xFF637B48)
+                    : const Color(0xFF8C5145),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

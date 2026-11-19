@@ -234,12 +234,12 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
               child: Column(
                 children: [
                   _outlinedText(
-                    'CHALLENGE ${widget.moduleIndex ~/ 4 + 1}',
+                    "GODS' TRIAL ${widget.moduleIndex ~/ 4 + 1}",
                     fontSize: 22,
                   ),
                   const SizedBox(height: 8),
                   _outlinedText(
-                    'TASK ${_taskIndex + 1} OF ${_tasks.length} · ${_activityName(task.activity)}',
+                    'RITE ${_taskIndex + 1} OF ${_tasks.length} · ${_activityName(task.activity)}',
                     fontSize: 13,
                     color: Colors.white,
                   ),
@@ -249,8 +249,8 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
                     child: LinearProgressIndicator(
                       minHeight: 8,
                       value: (_taskIndex + 1) / _tasks.length,
-                      backgroundColor: const Color(0xFF6B3E26),
-                      color: const Color(0xFFFFD166),
+                      backgroundColor: const Color(0xFF414536),
+                      color: const Color(0xFFD1C27E),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -277,7 +277,7 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _outlinedText('What letter is this?', fontSize: 18),
+        _outlinedText('Reveal the letter', fontSize: 18),
         const SizedBox(height: 12),
         Expanded(
           child: Center(
@@ -319,7 +319,7 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
   Widget _findSignView(_ChallengeTask task) {
     return Column(
       children: [
-        _outlinedText('Find the sign for ${task.letter.letter}', fontSize: 18),
+        _outlinedText('Seek the sign for ${task.letter.letter}', fontSize: 18),
         const SizedBox(height: 12),
         Expanded(
           child: LayoutBuilder(
@@ -349,7 +349,7 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
   Widget _matchPairView() {
     return Column(
       children: [
-        _outlinedText('Match the pairs', fontSize: 18),
+        _outlinedText('Bind the pairs', fontSize: 18),
         const SizedBox(height: 12),
         Expanded(
           child: LayoutBuilder(
@@ -439,7 +439,7 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _outlinedText('Complete the sentence', fontSize: 18),
+              _outlinedText('Restore the inscription', fontSize: 18),
               const SizedBox(height: 18),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 560),
@@ -450,9 +450,9 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
                     vertical: 28,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF382630),
+                    color: const Color(0xFF34382D),
                     border: Border.all(
-                      color: const Color(0xFF817B6B),
+                      color: const Color(0xFF7C806C),
                       width: 4,
                     ),
                   ),
@@ -494,7 +494,7 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
     final parts = prompt.sentence.split('_');
     return TextSpan(
       style: const TextStyle(
-        color: Color(0xFFFFE8B2),
+        color: Color(0xFFE3D9AA),
         fontSize: 24,
         fontWeight: FontWeight.w800,
         height: 1.45,
@@ -510,13 +510,13 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
               height: 52,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFF9A5737),
-                border: Border.all(color: const Color(0xFF28202A), width: 4),
+                color: const Color(0xFF617347),
+                border: Border.all(color: const Color(0xFF25291F), width: 4),
               ),
               child: const Text(
                 '?',
                 style: TextStyle(
-                  color: Color(0xFFFFE8B2),
+                  color: Color(0xFFE3D9AA),
                   fontSize: 28,
                   fontWeight: FontWeight.w900,
                 ),
@@ -564,7 +564,7 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
   Widget _outlinedText(
     String text, {
     required double fontSize,
-    Color color = const Color(0xFFFFE8B2),
+    Color color = const Color(0xFFE3D9AA),
   }) {
     final style = TextStyle(
       fontSize: fontSize,
@@ -591,10 +591,10 @@ class _MixedChallengeScreenState extends State<MixedChallengeScreen> {
   }
 
   String _activityName(_ChallengeActivity activity) => switch (activity) {
-    _ChallengeActivity.nameSign => 'NAME THE LETTER',
-    _ChallengeActivity.findSign => 'FIND THE SIGN',
-    _ChallengeActivity.matchPair => 'MATCH PAIRS',
-    _ChallengeActivity.sentence => 'COMPLETE SENTENCE',
+    _ChallengeActivity.nameSign => 'REVEAL THE LETTER',
+    _ChallengeActivity.findSign => 'SEEK THE SIGN',
+    _ChallengeActivity.matchPair => 'BIND THE PAIRS',
+    _ChallengeActivity.sentence => 'RESTORE THE INSCRIPTION',
   };
 }
 
@@ -618,11 +618,11 @@ class _PairConnectionPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final outline = Paint()
-      ..color = const Color(0xFF382630)
+      ..color = const Color(0xFF34382D)
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.square;
     final line = Paint()
-      ..color = const Color(0xFFFFD166)
+      ..color = const Color(0xFFD1C27E)
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.square;
 

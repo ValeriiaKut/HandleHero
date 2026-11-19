@@ -33,10 +33,10 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'NO LIVES LEFT',
+                    'SPIRIT DEPLETED',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Color(0xFFFFD55A),
+                      color: Color(0xFFD1C27E),
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -46,12 +46,12 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                     'COINS: ${homeState.coins}',
                     style: const TextStyle(
                       fontSize: 10,
-                      color: Color(0xFFFFE8B2),
+                      color: Color(0xFFE3D9AA),
                     ),
                   ),
                   const SizedBox(height: 12),
                   TreasureButton(
-                    label: 'RESTART',
+                    label: 'RENEW THE RITE',
                     tone: TreasureButtonTone.green,
                     labelColor: Colors.black,
                     labelShadow: false,
@@ -60,6 +60,9 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                       context.read<LevelBloc>().add(LevelStarted());
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
+                          settings: RouteSettings(
+                            name: '/level-overview/$moduleIndex',
+                          ),
                           builder: (_) =>
                               LevelOverviewScreen(moduleIndex: moduleIndex),
                         ),
@@ -69,7 +72,7 @@ Future<void> showOutOfLivesDialog(BuildContext context, {int moduleIndex = 0}) {
                   ),
                   const SizedBox(height: 6),
                   TreasureButton(
-                    label: 'HOME',
+                    label: 'RETURN TO REALM',
                     tone: TreasureButtonTone.red,
                     labelColor: Colors.black,
                     labelShadow: false,
@@ -131,8 +134,8 @@ void handleWrongAnswer({
         child: SizedBox(
           width: math.min(MediaQuery.sizeOf(dialogContext).width * .9, 520.0),
           child: TreasureWindow(
-            title: 'Try Again',
-            titleBackgroundColor: const Color(0xFF8D3D35),
+            title: 'THE RITE CONTINUES',
+            titleBackgroundColor: const Color(0xFF8C5145),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -145,7 +148,7 @@ void handleWrongAnswer({
                 ),
                 const SizedBox(height: 12),
                 TreasureButton(
-                  label: 'TRY AGAIN',
+                  label: 'RETRY THE RITE',
                   tone: TreasureButtonTone.red,
                   labelColor: Colors.black,
                   labelShadow: false,
