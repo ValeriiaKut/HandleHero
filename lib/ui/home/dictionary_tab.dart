@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:handle_hero/data/letter_finger_descriptions.dart';
 import 'package:handle_hero/data/module_catalog.dart';
 import 'package:handle_hero/models/models.dart';
 import 'package:handle_hero/utils/my_images.dart';
-import 'package:handle_hero/widgets/letter_sign.dart';
 import 'package:handle_hero/widgets/letter_glyph.dart';
+import 'package:handle_hero/widgets/letter_sign.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class DictionaryTab extends StatelessWidget {
@@ -29,28 +30,27 @@ class DictionaryTab extends StatelessWidget {
                     Expanded(
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          final columns = (constraints.maxWidth / 68)
-                              .floor()
-                              .clamp(4, 8);
-                          final spacing = constraints.maxWidth < 360
-                              ? 7.0
-                              : 10.0;
+                          const spacing = 12.0;
+                          final tileSize =
+                              (constraints.maxWidth - spacing * 2) / 3;
+                          final glyphSize = (tileSize * .82)
+                              .clamp(0.0, 180.0)
+                              .toDouble();
                           return GridView.builder(
                             padding: const EdgeInsets.symmetric(vertical: 4),
                             itemCount: letters.length,
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: columns,
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
                                   crossAxisSpacing: spacing,
                                   mainAxisSpacing: spacing,
                                   childAspectRatio: 1,
                                 ),
-                            itemBuilder: (context, index) =>
-                                _DictionaryLetterTile(
-                                  option: letters[index],
-                                  onTap: () =>
-                                      _showLetter(context, letters[index]),
-                                ),
+                            itemBuilder: (context, index) => _DictionaryLetterTile(
+                              letter: letters[index].letter,
+                              size: glyphSize,
+                              onTap: () => _showLetter(context, letters[index]),
+                            ),
                           );
                         },
                       ),
@@ -78,18 +78,32 @@ class DictionaryTab extends StatelessWidget {
           child: SingleChildScrollView(
             child: TreasureWindow(
               title: 'Letter ${option.letter}',
-              showFrame: false,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Builder(
-                    builder: (context) {
-                      final size = (MediaQuery.sizeOf(context).height * .26)
-                          .clamp(100.0, 220.0);
-                      return LetterSign(option: option, size: size);
-                    },
+                  LetterSign(
+                    option: option,
+                    size: (MediaQuery.sizeOf(dialogContext).height * .25)
+                        .clamp(120.0, 220.0)
+                        .toDouble(),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 8),
+                  const TreasureBanner(
+                    title: 'Finger positions',
+                    backgroundColor: Color(0xFF547541),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    letterFingerDescriptions[option.letter] ??
+                        'Use the handshape shown above.',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      color: Color(0xFFFFE8B2),
+                      fontSize: 11,
+                      height: 1.7,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
                   TreasureButton(
                     label: 'CLOSE',
                     tone: TreasureButtonTone.red,
@@ -108,38 +122,21 @@ class DictionaryTab extends StatelessWidget {
 }
 
 class _DictionaryLetterTile extends StatelessWidget {
-  const _DictionaryLetterTile({required this.option, required this.onTap});
+  const _DictionaryLetterTile({
+    required this.letter,
+    required this.size,
+    required this.onTap,
+  });
 
-  final LetterOption option;
+  final String letter;
+  final double size;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: const Color(0xFF382630),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: const [
-              BoxShadow(color: Color(0xFF28202A), offset: Offset(3, 3)),
-            ],
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final signSize = (constraints.maxHeight * .5).clamp(22.0, 48.0);
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  LetterSign(option: option, size: signSize),
-                  const SizedBox(height: 3),
-                  LetterGlyph(letter: option.letter, size: 24),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
+    return InkWell(
+      onTap: onTap,
+      child: Center(child: LetterGlyph(letter: letter, size: size)),
     );
   }
 }
