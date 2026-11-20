@@ -17,3 +17,10 @@ final class CoinsEarned extends HomeEvent {
 
   CoinsEarned(this.amount);
 }
+
+final class CoinsBalanceSynced extends HomeEvent {
+  final String userId;
+  final int coins;
+
+  CoinsBalanceSynced(this.userId, this.coins);
+}

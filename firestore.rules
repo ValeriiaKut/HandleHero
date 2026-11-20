@@ -1,27 +1,148 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function acceptedFriendship(firstId, secondId) {
+      let directPath = /databases/$(database)/documents/friend_requests/$(firstId + '_' + secondId);
+      let reversePath = /databases/$(database)/documents/friend_requests/$(secondId + '_' + firstId);
+      return (exists(directPath) && get(directPath).data.status == 'accepted')
+        || (exists(reversePath) && get(reversePath).data.status == 'accepted');
+    }
+
+    function walletBalance(userData) {
+      return ('coins' in userData) ? userData.coins : 100;
+    }
+
     match /users/{userId} {
       // Signed-in players can look up a profile by its exact Firebase ID.
       allow get: if request.auth != null;
       allow list: if false;
-      allow create, update: if request.auth != null
+      allow create: if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.keys().hasOnly(['id', 'name', 'createdAt'])
+        && request.resource.data.keys().hasOnly(['id', 'name', 'createdAt', 'coins'])
         && request.resource.data.id == userId
-        && request.resource.data.name is string;
+        && request.resource.data.name is string
+        && request.resource.data.coins is int
+        && request.resource.data.coins >= 0;
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['id', 'name', 'createdAt', 'coins'])
+        && request.resource.data.id == userId
+        && request.resource.data.name is string
+        && request.resource.data.coins is int
+        && request.resource.data.coins >= 0
+        || request.auth != null
+        && request.auth.uid != userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coins'])
+        && request.resource.data.coins is int
+        && request.resource.data.coins == walletBalance(resource.data) + 10
+        && acceptedFriendship(userId, request.auth.uid)
+        && getAfter(/databases/$(database)/documents/users/$(request.auth.uid)/dailyGifts/$(userId)).data.amount == 10
+        && getAfter(/databases/$(database)/documents/users/$(request.auth.uid)/dailyGifts/$(userId)).data.lastSentAt == request.time;
       allow delete: if false;
 
-      match /friends/{friendId} {
-        allow read, delete: if request.auth != null && request.auth.uid == userId;
+      match /dailyGifts/{recipientId} {
+        function validGiftTransfer() {
+          return request.resource.data.keys().hasOnly(['amount', 'giftId', 'lastSentAt'])
+            && request.resource.data.amount == 10
+            && request.resource.data.giftId is string
+            && request.resource.data.lastSentAt == request.time
+            && exists(/databases/$(database)/documents/users/$(recipientId))
+            && acceptedFriendship(userId, recipientId)
+            && getAfter(/databases/$(database)/documents/coin_gifts/$(request.resource.data.giftId)).data.senderId == userId
+            && getAfter(/databases/$(database)/documents/coin_gifts/$(request.resource.data.giftId)).data.recipientId == recipientId
+            && getAfter(/databases/$(database)/documents/users/$(userId)).data.coins
+              == walletBalance(get(/databases/$(database)/documents/users/$(userId)).data) - 10
+            && getAfter(/databases/$(database)/documents/users/$(recipientId)).data.coins
+              == walletBalance(get(/databases/$(database)/documents/users/$(recipientId)).data) + 10;
+        }
+
+        allow get: if request.auth != null && request.auth.uid == userId;
+        allow list: if false;
         allow create: if request.auth != null
           && request.auth.uid == userId
-          && friendId != userId
-          && request.resource.data.keys().hasOnly(['id', 'name'])
-          && request.resource.data.id == friendId
-          && exists(/databases/$(database)/documents/users/$(friendId));
-        allow update: if false;
+          && recipientId != userId
+          && validGiftTransfer();
+        allow update: if request.auth != null
+          && request.auth.uid == userId
+          && recipientId != userId
+          && resource.data.lastSentAt + duration.value(1, 'd') <= request.time
+          && validGiftTransfer();
+        allow delete: if false;
       }
+
+    }
+
+    match /coin_gifts/{giftId} {
+      allow get: if request.auth != null
+        && (request.auth.uid == resource.data.senderId
+          || request.auth.uid == resource.data.recipientId);
+      allow list: if request.auth != null
+        && request.auth.uid == resource.data.recipientId;
+
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.senderId
+        && request.resource.data.keys().hasOnly([
+          'senderId', 'recipientId', 'senderName', 'amount', 'seen', 'createdAt'
+        ])
+        && request.resource.data.amount == 10
+        && request.resource.data.seen == false
+        && request.resource.data.createdAt == request.time
+        && acceptedFriendship(request.resource.data.senderId, request.resource.data.recipientId)
+        && getAfter(/databases/$(database)/documents/users/$(request.resource.data.senderId)).data.coins
+          == walletBalance(get(/databases/$(database)/documents/users/$(request.resource.data.senderId)).data) - 10
+        && getAfter(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data.coins
+          == walletBalance(get(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data) + 10
+        && getAfter(/databases/$(database)/documents/users/$(request.resource.data.senderId)/dailyGifts/$(request.resource.data.recipientId)).data.giftId == giftId;
+
+      allow update: if request.auth != null
+        && request.auth.uid == resource.data.recipientId
+        && resource.data.seen == false
+        && request.resource.data.seen == true
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['seen']);
+      allow delete: if false;
+    }
+
+    match /friend_requests/{requestId} {
+      function signedIn() {
+        return request.auth != null;
+      }
+
+      function isParticipant() {
+        return signedIn()
+          && (request.auth.uid == resource.data.senderId
+            || request.auth.uid == resource.data.recipientId);
+      }
+
+      // Direct document reads are used to check whether a request already exists.
+      // List queries remain limited to the sender or recipient.
+      allow get: if signedIn();
+      allow list: if isParticipant();
+
+      allow create: if signedIn()
+        && request.auth.uid == request.resource.data.senderId
+        && request.resource.data.senderId != request.resource.data.recipientId
+        && requestId == request.resource.data.senderId + '_' + request.resource.data.recipientId
+        && request.resource.data.status == 'pending'
+        && request.resource.data.senderName is string
+        && request.resource.data.recipientName is string
+        && request.resource.data.keys().hasOnly([
+          'senderId', 'senderName', 'recipientId', 'recipientName', 'status', 'createdAt'
+        ])
+        && exists(/databases/$(database)/documents/users/$(request.resource.data.recipientId));
+
+      allow update: if signedIn()
+        && request.auth.uid == resource.data.recipientId
+        && resource.data.status == 'pending'
+        && request.resource.data.status in ['accepted', 'declined']
+        && request.resource.data.senderId == resource.data.senderId
+        && request.resource.data.senderName == resource.data.senderName
+        && request.resource.data.recipientId == resource.data.recipientId
+        && request.resource.data.recipientName == resource.data.recipientName
+        && request.resource.data.createdAt == resource.data.createdAt;
+
+      allow delete: if signedIn()
+        && request.auth.uid == resource.data.senderId
+        && resource.data.status == 'declined';
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:handle_hero/ui/home/friends_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handle_hero/bloc/home/home_bloc.dart';
@@ -33,6 +34,83 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedTab = 2;
+  bool _checkingCoinGifts = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showPendingCoinGifts();
+    });
+  }
+
+  Future<void> _showPendingCoinGifts() async {
+    if (_checkingCoinGifts) return;
+    _checkingCoinGifts = true;
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('coin_gifts')
+          .where('recipientId', isEqualTo: widget.userId)
+          .get();
+      final gifts = snapshot.docs
+          .where((gift) => gift.data()['seen'] != true)
+          .toList();
+      for (final gift in gifts) {
+        if (!mounted) return;
+        await gift.reference.update({'seen': true});
+        if (!mounted) return;
+        final data = gift.data();
+        final senderName = (data['senderName'] as String?)?.trim();
+        final amount = (data['amount'] as num?)?.toInt() ?? 10;
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (dialogContext) => Dialog(
+            backgroundColor: Colors.transparent,
+            child: TreasureWindow(
+              title: 'COIN GIFT!',
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(MyImages.success, width: 180),
+                  const SizedBox(height: 12),
+                  Text(
+                    '${senderName?.isNotEmpty == true ? senderName : 'A friend'} sent you',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFFE3D9AA),
+                      fontSize: 11,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '+$amount COINS!',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFFD1C27E),
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  TreasureButton(
+                    label: 'COLLECT',
+                    labelColor: Colors.black,
+                    labelShadow: false,
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    } on FirebaseException catch (error) {
+      debugPrint('Could not check coin gifts: ${error.code}');
+    } finally {
+      _checkingCoinGifts = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                 },
               )
             : _selectedTab == 0
-            ? FriendsPage(userId: widget.userId)
+            ? FriendsPage(userId: widget.userId, userName: widget.userName)
             : _selectedTab == 1
             ? const CameraGuessScreen(challengeIndex: 0, practiceMode: true)
             : _selectedTab == 3
