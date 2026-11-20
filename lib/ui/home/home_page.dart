@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handle_hero/ui/home/friends_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handle_hero/bloc/home/home_bloc.dart';
 import 'package:handle_hero/bloc/home/home_state.dart';
@@ -13,9 +14,17 @@ import 'package:handle_hero/widgets/level_button.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.userEmail, required this.onLogout});
+  const HomePage({
+    super.key,
+    required this.userEmail,
+    required this.userName,
+    required this.userId,
+    required this.onLogout,
+  });
 
   final String userEmail;
+  final String userName;
+  final String userId;
   final VoidCallback onLogout;
 
   @override
@@ -45,8 +54,20 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    Expanded(
+                      child: Text(
+                        'Hi, ${widget.userName.isEmpty ? 'Adventurer' : widget.userName}!',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     BlocBuilder<HomeBloc, HomeState>(
                       builder: (context, state) {
                         return Row(
@@ -164,12 +185,19 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               )
+            : _selectedTab == 0
+            ? FriendsPage(userId: widget.userId)
             : _selectedTab == 1
             ? const CameraGuessScreen(challengeIndex: 0, practiceMode: true)
             : _selectedTab == 3
             ? const DictionaryTab()
             : _selectedTab == 4
-            ? AccountProfilePage(email: widget.userEmail, onLogout: widget.onLogout)
+            ? AccountProfilePage(
+                email: widget.userEmail,
+                name: widget.userName,
+                userId: widget.userId,
+                onLogout: widget.onLogout,
+              )
             : _HomeTabPlaceholder(
                 title: switch (_selectedTab) {
                   0 => 'FRIENDS',

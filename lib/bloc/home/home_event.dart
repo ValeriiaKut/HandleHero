@@ -1,6 +1,10 @@
 sealed class HomeEvent {}
 
-final class HomeStarted extends HomeEvent {}
+final class HomeStarted extends HomeEvent {
+  final String userId;
+
+  HomeStarted(this.userId);
+}
 
 final class CoinsSpent extends HomeEvent {
   final int amount;

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:handle_hero/utils/my_images.dart';
 import 'package:handle_hero/widgets/treasure_ui.dart';
 
-typedef LoginCallback = bool Function(String email, String password);
-typedef RegistrationCallback = bool Function(String email, String password);
+typedef LoginCallback = Future<String?> Function(String email, String password);
+typedef RegistrationCallback = Future<String?> Function(
+  String name,
+  String email,
+  String password,
+);
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({
@@ -18,7 +23,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => _AuthForm(
     isRegistration: false,
-    onSubmit: onLogin,
+    onSubmit: (name, email, password) => onLogin(email, password),
     onOpenOtherScreen: onOpenRegistration,
   );
 }
@@ -47,7 +52,8 @@ class _AuthForm extends StatefulWidget {
   });
 
   final bool isRegistration;
-  final bool Function(String email, String password) onSubmit;
+  final Future<String?> Function(String name, String email, String password)
+  onSubmit;
   final VoidCallback onOpenOtherScreen;
 
   @override
@@ -56,14 +62,17 @@ class _AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<_AuthForm> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _showPassword = false;
   bool _showConfirmPassword = false;
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -93,6 +102,16 @@ class _AuthFormState extends State<_AuthForm> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if (widget.isRegistration) ...[
+                            _inputField(
+                              label: 'NAME',
+                              controller: _nameController,
+                              textInputAction: TextInputAction.next,
+                              autofillHints: const [AutofillHints.name],
+                              validator: _validateName,
+                            ),
+                            const SizedBox(height: 14),
+                          ],
                           _inputField(
                             label: 'EMAIL',
                             controller: _emailController,
@@ -168,7 +187,7 @@ class _AuthFormState extends State<_AuthForm> {
                                   : 'LOG IN',
                               labelColor: Colors.black,
                               labelShadow: false,
-                              onPressed: _submit,
+                              onPressed: _isSubmitting ? null : _submit,
                             ),
                           ),
                           const SizedBox(height: 14),
@@ -256,29 +275,40 @@ class _AuthFormState extends State<_AuthForm> {
     return null;
   }
 
+  String? _validateName(String? value) {
+    if ((value?.trim() ?? '').isEmpty) return 'Enter your name';
+    return null;
+  }
+
   String? _validatePassword(String? value) {
     if ((value ?? '').length < 6) return 'Use at least 6 characters';
     return null;
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    final success = widget.onSubmit(
-      _emailController.text.trim(),
-      _passwordController.text,
-    );
-    if (!success) {
+    setState(() => _isSubmitting = true);
+    String? error;
+    try {
+      error = await widget.onSubmit(
+        _nameController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+    } on FirebaseException catch (exception) {
+      error = 'Firebase error (${exception.code}). Please check your Firebase setup.';
+    } catch (_) {
+      error = 'Could not finish registration. Please try again.';
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+    if (!mounted) return;
+    if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            widget.isRegistration
-                ? 'This email is already registered.'
-                : 'Email or password is incorrect. Register first if needed.',
-          ),
-        ),
+        SnackBar(content: Text(error)),
       );
       return;
     }
-    if (widget.isRegistration) Navigator.pop(context);
+    if (widget.isRegistration) Navigator.pop(context, true);
   }
 }

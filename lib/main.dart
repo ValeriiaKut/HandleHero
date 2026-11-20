@@ -4,13 +4,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:handle_hero/bloc/home/home_bloc.dart';
-import 'package:handle_hero/bloc/home/home_event.dart';
 import 'package:handle_hero/bloc/level/level_bloc.dart';
 import 'package:handle_hero/ui/auth/auth_gate.dart';
+import 'package:handle_hero/firebase_options.dart';
 import 'package:handle_hero/utils/my_images.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -21,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => HomeBloc()..add(HomeStarted())),
+        BlocProvider(create: (_) => HomeBloc()),
         BlocProvider(create: (_) => LevelBloc()),
       ],
       child: MaterialApp(
